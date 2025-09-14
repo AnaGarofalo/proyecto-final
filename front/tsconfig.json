@@ -1,0 +1,38 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+      "compilerOptions": {
+      "noImplicitAny": false,
+      "allowSyntheticDefaultImports": true,
+      "sourceMap": true,
+      "target": "ESNext",
+      "lib": ["DOM", "es2018", "ES2021.String"],
+      "jsx": "react",
+      "types": [
+        "react"
+      ],
+      "esModuleInterop": true,
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "removeComments": true ,
+      "noImplicitReturns": true ,
+      "noUnusedParameters": true,
+      "noUnusedLocals": true ,
+      "strict": true ,
+      "typeRoots": [
+        "./types",
+        "node_modules/@types"
+      ],
+      "strictNullChecks": false,
+      "allowJs": true,
+      "declaration": true,
+      "skipLibCheck": true,
+      "noEmit": true,
+      "outDir": "ts"
+    },
+}

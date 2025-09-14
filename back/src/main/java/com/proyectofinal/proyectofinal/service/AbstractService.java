@@ -1,8 +1,8 @@
 package com.proyectofinal.proyectofinal.service;
 
+import com.proyectofinal.proyectofinal.exception.PFNotFoundException;
 import com.proyectofinal.proyectofinal.model.AbstractModel;
 import com.proyectofinal.proyectofinal.repository.AbstractRepository;
-import org.hibernate.ObjectNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +26,12 @@ public class AbstractService<M extends AbstractModel, R extends AbstractReposito
 
     public M getById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(id, String.valueOf(modelClass)));
+                .orElseThrow(() -> new PFNotFoundException(id.toString(), "id", modelClass));
     }
 
     public M getByExternalId(String externalId) {
         return repository.findByExternalId(externalId)
-                .orElseThrow(() -> new ObjectNotFoundException(externalId, modelClass));
+                .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", modelClass));
     }
 
     public List<M> getAllActive() {

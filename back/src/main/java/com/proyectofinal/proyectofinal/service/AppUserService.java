@@ -1,6 +1,7 @@
 package com.proyectofinal.proyectofinal.service;
 
-import com.proyectofinal.proyectofinal.dto.app_user.AppUserCreationDTO;
+import com.proyectofinal.proyectofinal.dto.app_user.AppUserLoginDTO;
+import com.proyectofinal.proyectofinal.exception.PFNotFoundException;
 import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.repository.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +24,12 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         return repository.findByEmailAndDeletedAtIsNull(email);
     }
 
-    public AppUser create(AppUserCreationDTO creationDTO) {
+    public AppUser getByEmail(String email) {
+        return findActiveByEmail(email)
+                .orElseThrow(() -> new PFNotFoundException(email, "email", AppUser.class));
+    }
+
+    public AppUser create(AppUserLoginDTO creationDTO) {
         Optional<AppUser> opExistingUser = findActiveByEmail(creationDTO.getEmail());
         if (opExistingUser.isPresent()) {
             throw new IllegalArgumentException(String.format("AppUser with email %s already exists", creationDTO.getEmail()));

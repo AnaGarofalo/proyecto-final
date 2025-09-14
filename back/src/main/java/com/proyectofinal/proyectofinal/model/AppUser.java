@@ -1,9 +1,7 @@
 package com.proyectofinal.proyectofinal.model;
 
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,8 +9,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AppUser extends AbstractModel{
+@Getter
+@Setter
+public class AppUser extends AbstractModel {
     private String email;
     private String password; //hashed
-    private LocalDateTime deletedAt;
+    private LocalDateTime blockedAt;
 }
