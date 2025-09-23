@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AbstractService<M extends AbstractModel, R extends AbstractRepository<M>> {
-    private final R repository;
+    protected final R repository;
     private final Class<M> modelClass;
 
     public AbstractService(R repository, Class<M> modelClass) {
