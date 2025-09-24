@@ -11,12 +11,10 @@ import java.util.Optional;
 
 @Service
 public class AppUserService extends AbstractService<AppUser, AppUserRepository> {
-    private final AppUserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
     public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         super(appUserRepository, AppUser.class);
-        repository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
