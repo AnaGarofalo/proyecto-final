@@ -1,5 +1,6 @@
 import { Button, type ButtonProps } from '@mui/material'
 import React from 'react'
+import { Colors } from '../../utils/Colors'
 
 type BaseButtonVariant = 'filled' | 'outline' | 'logout'
 
@@ -16,25 +17,25 @@ const BaseButton: React.FC<Props> = ({ variantType = 'filled', icon, children, .
     case 'filled':
       muiVariant = 'contained'
       sx = {
-        bgcolor: '#176B8C',
-        color: '#fff',
-        '&:hover': { bgcolor: '#125871' }
+        bgcolor: Colors.PRIMARY_DARK_BLUE,
+        color: Colors.SEPTENARY_WHITE,
+        '&:hover': { bgcolor: Colors.HOVER_BLUE }
       }
       break
     case 'outline':
       muiVariant = 'outlined'
       sx = {
-        borderColor: '#176B8C',
-        color: '#176B8C',
-        '&:hover': { bgcolor: '#f4f8fb' }
+        borderColor: Colors.PRIMARY_DARK_BLUE,
+        color: Colors.PRIMARY_DARK_BLUE,
+        '&:hover': { bgcolor: Colors.HOVER_WHITE}
       }
       break
     case 'logout':
       muiVariant = 'outlined'
       sx = {
-        borderColor: '#CFCFCF',
-        color: '#5A5D5D',
-        '&:hover': { bgcolor: '#fafafa' }
+        borderColor: Colors.QUINARY_LIGHT_GRAY,
+        color: Colors.QUARTERNARY_DARK_GRAY,
+        '&:hover': { bgcolor: Colors.HOVER_WHITE_TWO }
       }
       break
   }

@@ -1,5 +1,6 @@
 import { TextField, InputAdornment, type TextFieldProps } from '@mui/material'
 import React from 'react'
+import { Colors } from '../../utils/Colors'
 
 type BaseInputProps = TextFieldProps & {
   label?: string
@@ -30,17 +31,17 @@ const BaseInput: React.FC<BaseInputProps> = ({
         '& .MuiOutlinedInput-root': {
           borderRadius: 2,
           '& fieldset': {
-            borderColor: '#CFCFCF', // gris por default
+            borderColor: Colors.QUINARY_LIGHT_GRAY
           },
           '&:hover fieldset': {
-            borderColor: '#176B8C', // azul al hover
+            borderColor: Colors.PRIMARY_DARK_BLUE,
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#176B8C', // azul al focus
+            borderColor: Colors.PRIMARY_DARK_BLUE, 
           },
         },
         '& .MuiInputLabel-root.Mui-focused': {
-          color: '#176B8C',
+          color: Colors.PRIMARY_DARK_BLUE, 
         },
       }}
       {...props}
