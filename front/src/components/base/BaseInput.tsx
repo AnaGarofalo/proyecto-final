@@ -37,11 +37,11 @@ const BaseInput: React.FC<BaseInputProps> = ({
             borderColor: Colors.PRIMARY_DARK_BLUE,
           },
           '&.Mui-focused fieldset': {
-            borderColor: Colors.PRIMARY_DARK_BLUE, 
+            borderColor: Colors.PRIMARY_DARK_BLUE,
           },
         },
         '& .MuiInputLabel-root.Mui-focused': {
-          color: Colors.PRIMARY_DARK_BLUE, 
+          color: Colors.PRIMARY_DARK_BLUE,
         },
       }}
       {...props}

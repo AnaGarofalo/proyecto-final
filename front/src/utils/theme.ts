@@ -22,7 +22,7 @@ export const appTheme = createTheme({
     error: { main: red },
     text: { primary: '#000', secondary: gray600 },
     grey: { 100: gray100, 300: gray300, 600: gray600 },
-    background: { default: Colors.SEPTENARY_WHITE}
+    background: { default: Colors.SEPTENARY_WHITE }
   },
   shape: { borderRadius: 10 },
   // Tipografías: deje valores por defecto
@@ -47,7 +47,7 @@ export const appTheme = createTheme({
             backgroundColor: Colors.SEPTENARY_WHITE,
             color: primary,
             border: `2px solid ${primary}`,
-            '&:hover': { backgroundColor: Colors.HOVER_WHITE}
+            '&:hover': { backgroundColor: Colors.HOVER_WHITE }
           }
         },
         { // Logout (borde/texto gris)
@@ -56,7 +56,7 @@ export const appTheme = createTheme({
             backgroundColor: Colors.SEPTENARY_WHITE,
             color: gray600,
             border: `2px solid ${gray300}`,
-            '&:hover': { backgroundColor: Colors.HOVER_WHITE_TWO}
+            '&:hover': { backgroundColor: Colors.HOVER_WHITE_TWO }
           }
         }
       ]

@@ -27,7 +27,7 @@ const BaseButton: React.FC<Props> = ({ variantType = 'filled', icon, children, .
       sx = {
         borderColor: Colors.PRIMARY_DARK_BLUE,
         color: Colors.PRIMARY_DARK_BLUE,
-        '&:hover': { bgcolor: Colors.HOVER_WHITE}
+        '&:hover': { bgcolor: Colors.HOVER_WHITE }
       }
       break
     case 'logout':
