@@ -7,6 +7,7 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +16,12 @@ import org.springframework.context.annotation.Configuration;
 public class OpenAIConfig {
 
     @Bean
+    // Este objeto representa el modelo del chat (GPT-4o-mini)
     public ChatLanguageModel chatModel(
-            @Value("${openai.api-key:${OPENAI_API_KEY:}}") String apiKey,
-            @Value("${openai.chat-model:gpt-4o-mini}") String model
-    ) {
-        if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalStateException("Falta OPENAI_API_KEY (variable de entorno o application.properties)");
+            @Value("${openai.api.key:${OPENAI_API_KEY:}}") String apiKey,
+            @Value("${openai.chat.model:gpt-4o-mini}") String model) {
+        if (StringUtils.isEmpty(apiKey)) {
+            throw new IllegalStateException("Missing OPENAI_API_KEY");
         }
         return OpenAiChatModel.builder()
                 .apiKey(apiKey)
@@ -30,10 +31,10 @@ public class OpenAIConfig {
     }
 
     @Bean
+    // Este objeto representa el modelo de embeddings (text-embedding-3-small)
     public EmbeddingModel embeddingModel(
-            @Value("${openai.api-key:${OPENAI_API_KEY:}}") String apiKey,
-            @Value("${openai.embedding-model:text-embedding-3-small}") String model
-    ) {
+            @Value("${openai.api.key:${OPENAI_API_KEY:}}") String apiKey,
+            @Value("${openai.embedding.model:text-embedding-3-small}") String model) {
         return OpenAiEmbeddingModel.builder()
                 .apiKey(apiKey)
                 .modelName(model)
@@ -41,6 +42,8 @@ public class OpenAIConfig {
     }
 
     @Bean
+    // Este objeto representa el almacenamiento en memoria de los embeddings (ahora
+    // son temporales)
     public EmbeddingStore<TextSegment> embeddingStore() {
         return new InMemoryEmbeddingStore<>();
     }
