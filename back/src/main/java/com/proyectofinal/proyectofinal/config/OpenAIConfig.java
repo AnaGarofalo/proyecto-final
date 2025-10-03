@@ -19,7 +19,7 @@ public class OpenAIConfig {
     // Este objeto representa el modelo del chat (GPT-4o-mini)
     public ChatLanguageModel chatModel(
             @Value("${openai.api.key}") String apiKey,
-            @Value("${openai.chat.model:gpt-4o-mini}") String model) {
+            @Value("${openai.chat.model}") String model) {
         if (StringUtils.isEmpty(apiKey)) {
             throw new IllegalStateException("Missing OPENAI_API_KEY");
         }
@@ -34,7 +34,7 @@ public class OpenAIConfig {
     // Este objeto representa el modelo de embeddings (text-embedding-3-small)
     public EmbeddingModel embeddingModel(
             @Value("${openai.api.key}") String apiKey,
-            @Value("${openai.embedding.model:text-embedding-3-small}") String model) {
+            @Value("${openai.embedding.model}") String model) {
         return OpenAiEmbeddingModel.builder()
                 .apiKey(apiKey)
                 .modelName(model)

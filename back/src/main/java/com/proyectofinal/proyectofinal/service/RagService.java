@@ -1,5 +1,6 @@
 package com.proyectofinal.proyectofinal.service;
 
+import com.proyectofinal.proyectofinal.dto.app_user.IngestResponseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +19,7 @@ public class RagService {
     }
 
     // Aca se procesan los archivos subidos
-    public int ingestFiles(MultipartFile[] files) throws Exception {
+    public IngestResponseDTO ingestFiles(MultipartFile[] files) throws Exception {
         int processed = 0;
 
         for (MultipartFile f : files) {
@@ -33,7 +34,7 @@ public class RagService {
             processed++;
         }
 
-        return processed;
+        return new IngestResponseDTO(processed);
     }
 
     // Delega la pregunta al servicio de OpenAI

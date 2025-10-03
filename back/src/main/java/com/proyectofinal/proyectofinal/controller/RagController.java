@@ -24,9 +24,7 @@ public class RagController {
     // Subida de archivos a la base de datos de vectores
     @PostMapping(value = "/ingest", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<IngestResponseDTO> ingest(@RequestPart("files") MultipartFile[] files) throws Exception {
-        int count = ragService.ingestFiles(files);
-        var resp = new IngestResponseDTO();
-        resp.setIndexed(count); // Indica el numero de archivos indexados (0 o 1)
+        IngestResponseDTO resp = ragService.ingestFiles(files);
 
         return ResponseEntity.ok(resp);
     }
@@ -37,9 +35,10 @@ public class RagController {
         String answer = ragService.ask(req.getQuestion());
         List<String> sources = ragService.topSources(req.getQuestion());
 
-        var resp = new ChatResponseDTO();
-        resp.setAnswer(answer); // Respuesta del modelo
-        resp.setSources(sources); // Fuentes de la respuesta
+        ChatResponseDTO resp = ChatResponseDTO.builder()
+                .answer(answer)
+                .sources(sources)
+                .build();
 
         return ResponseEntity.ok(resp);
     }

@@ -1,6 +1,7 @@
 package com.proyectofinal.proyectofinal.service;
 
 import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.segment.TextSegment;
@@ -30,9 +31,9 @@ public class OpenAiService {
 
     // Indexa el texto, genera chunks, obtiene embeddings y los guarda
     public void indexFile(String text, String filename) {
-        var splitter = DocumentSplitters.recursive(800, 200);
-        var meta = Metadata.from("filename", filename);
-        var doc = Document.from(text, meta);
+        DocumentSplitter splitter = DocumentSplitters.recursive(800, 200);
+        Metadata meta = Metadata.from("filename", filename);
+        Document doc = Document.from(text, meta);
 
         var segments = splitter.split(doc);
         if (!segments.isEmpty()) {
