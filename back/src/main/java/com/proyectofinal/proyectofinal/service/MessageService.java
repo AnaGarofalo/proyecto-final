@@ -1,27 +1,37 @@
 package com.proyectofinal.proyectofinal.service;
 
-import com.proyectofinal.proyectofinal.model.ChatUser;
-import lombok.RequiredArgsConstructor;
+import com.proyectofinal.proyectofinal.model.Conversation;
+import com.proyectofinal.proyectofinal.model.Message;
+import com.proyectofinal.proyectofinal.repository.MessageRepository;
+import com.proyectofinal.proyectofinal.types.MessageOrigin;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-public class MessageService {
-    public static final String NO_USER_RESPONSE = "Para comunicarte con el asistente virtual, por favor ingresá tu email empresarial";
-    public static final String BLOCKED_USER_RESPONSE = "No estás autorizado para comunicarte con el asistente virtual";
+public class MessageService extends AbstractService<Message, MessageRepository>{
+    public MessageService(MessageRepository repository) {
+        super(repository, Message.class);
+    }
 
-    private final ChatUserService chatUserService;
+    public Message create(Conversation conversation, String content, MessageOrigin origin) {
+        checkElementsValidity(conversation, content, origin);
 
-    public String getResponseForMessage(String message, String phoneNumber) {
-        ChatUser chatUser = chatUserService.getOrCreateForPhone(message, phoneNumber);
-        if (chatUser == null) {
-            return NO_USER_RESPONSE;
+        Message message = Message.builder()
+                .conversation(conversation)
+                .content(content)
+                .origin(origin)
+                .build();
+
+        return repository.save(message);
+    }
+
+    private void checkElementsValidity(Conversation conversation, String content, MessageOrigin origin) {
+        if (conversation == null) {
+            throw new IllegalArgumentException("Error creating user: Conversation is required");
+        } else if (StringUtils.isEmpty(content)) {
+            throw new IllegalArgumentException("Error creating user: Message is empty");
+        } else if (origin == null) {
+            throw new IllegalArgumentException("Error creating user: Origin is required");
         }
-
-        if (chatUser.isBlocked()) {
-            return BLOCKED_USER_RESPONSE;
-        }
-
-        return null; //TODO: get response from AI
     }
 }
