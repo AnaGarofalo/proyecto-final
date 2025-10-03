@@ -14,10 +14,10 @@ public class FileTextExtractor {
     private final AutoDetectParser parser = new AutoDetectParser();
 
     public String extract(byte[] bytes, String filename) throws Exception {
-        var handler = new BodyContentHandler(-1); // sin límite
-        var metadata = new Metadata();
+        BodyContentHandler handler = new BodyContentHandler(-1); // sin límite
+        Metadata metadata = new Metadata();
     if (filename != null) metadata.set("resourceName", filename);
-        try (var stream = new ByteArrayInputStream(bytes)) {
+        try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
             parser.parse(stream, handler, metadata, new ParseContext());
             return handler.toString();
         }
