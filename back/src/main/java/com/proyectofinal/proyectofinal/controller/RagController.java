@@ -1,5 +1,6 @@
 package com.proyectofinal.proyectofinal.controller;
 
+import com.proyectofinal.proyectofinal.dto.IAResponseDTO;
 import com.proyectofinal.proyectofinal.dto.app_user.ChatRequestDTO;
 import com.proyectofinal.proyectofinal.dto.app_user.ChatResponseDTO;
 import com.proyectofinal.proyectofinal.dto.app_user.IngestResponseDTO;
@@ -32,11 +33,11 @@ public class RagController {
     // Preguntas al modelo, es solo para pruebas y luego será removido
     @PostMapping("/chat")
     public ResponseEntity<ChatResponseDTO> chat(@RequestBody ChatRequestDTO req) {
-        String answer = ragService.ask(req.getQuestion());
+        IAResponseDTO answer = ragService.ask(req.getQuestion());
         List<String> sources = ragService.topSources(req.getQuestion());
 
         ChatResponseDTO resp = ChatResponseDTO.builder()
-                .answer(answer)
+                .answer(answer.getUserResponse())
                 .sources(sources)
                 .build();
 
