@@ -4,6 +4,9 @@ import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.data.embedding.Embedding;
 
@@ -51,9 +54,9 @@ public class OpenAiService {
     }
 
     // Genera las respuestas usando el contexto más relevante
-    public String answerFromContext(String question, int maxResults) {
+    public String answerFromContext(String question, int maxResults, String systemPrompt) {
         String context = buildContext(question, maxResults);
-        return generateAnswer(question, context);
+        return generateAnswer(question, context, systemPrompt);
     }
 
     // Construye el contexto más relevante a partir de los embeddings almacenados
@@ -90,13 +93,14 @@ public class OpenAiService {
     }
 
     // Prompt editable para controlar las respuestas
-    private String generateAnswer(String question, String context) {
-        String prompt = "Responde EXCLUSIVAMENTE usando el siguiente contexto. " +
-                "Ignora cualquier conocimiento previo y no corrijas lo que está en el documento. " +
-                "Si no está en el contexto, responde 'No lo sé'.\n\n" +
-                "Contexto:\n" + context + "\n\n" +
-                "Pregunta: " + question + "\nRespuesta:";
+    private String generateAnswer(String question, String context, String systemPrompt) {
+        String userPrompt = "Contexto:\n" + context + "\n\nPregunta: " + question;
 
-        return chatModel.generate(prompt);
+        AiMessage aiMessage = chatModel.generate(List.of(
+                SystemMessage.from(systemPrompt),
+                UserMessage.from(userPrompt)
+        )).content();
+
+        return aiMessage.text();
     }
 }

@@ -47,7 +47,7 @@ public class ChatUserService extends AbstractService<ChatUser, ChatUserRepositor
         return save(chatUser);
     }
 
-    private Optional<ChatUser> findByPhone(String phone) {
+    public Optional<ChatUser> findByPhone(String phone) {
         return repository.findByPhoneNumberAndDeletedAtIsNull(phone);
     }
 

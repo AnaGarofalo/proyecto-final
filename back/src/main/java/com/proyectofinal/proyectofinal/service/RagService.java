@@ -1,6 +1,8 @@
 package com.proyectofinal.proyectofinal.service;
 
+import com.proyectofinal.proyectofinal.dto.IAResponseDTO;
 import com.proyectofinal.proyectofinal.dto.app_user.IngestResponseDTO;
+import com.proyectofinal.proyectofinal.utils.IAResponseParser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,11 +13,14 @@ public class RagService {
 
     private final FileTextExtractor fileTextExtractor; // Extrae texto de archivos
     private final OpenAiService openAiService;
+    private final SystemPromptService systemPromptService;
 
     public RagService(FileTextExtractor fileTextExtractor,
-            OpenAiService openAiService) {
+                      OpenAiService openAiService,
+                      SystemPromptService systemPromptService) {
         this.fileTextExtractor = fileTextExtractor;
         this.openAiService = openAiService;
+        this.systemPromptService = systemPromptService;
     }
 
     // Aca se procesan los archivos subidos
@@ -38,8 +43,10 @@ public class RagService {
     }
 
     // Delega la pregunta al servicio de OpenAI
-    public String ask(String question) {
-        return openAiService.answerFromContext(question, 5);
+    public IAResponseDTO ask(String question) {
+        String systemPrompt = systemPromptService.getBasePrompt();
+        String response = openAiService.answerFromContext(question, 5, systemPrompt);
+        return IAResponseParser.parse(response);
     }
 
     // Indica las fuentes más relevantes para la pregunta al servicio de OpenAI
