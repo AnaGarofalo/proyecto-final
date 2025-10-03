@@ -38,7 +38,7 @@ public class OpenAiService {
     // Indexa el texto, genera chunks, obtiene embeddings y los guarda
     public void indexFile(String text, String filename) {
         DocumentSplitter splitter = DocumentSplitters.recursive(800, 200);
-        Metadata meta = Metadata.from("filename", filename);
+        Metadata meta = Metadata.from(META_FILENAME_KEY, filename);
         Document doc = Document.from(text, meta);
 
         List<TextSegment> segments = splitter.split(doc);
