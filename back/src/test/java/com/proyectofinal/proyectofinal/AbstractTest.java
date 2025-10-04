@@ -2,8 +2,10 @@ package com.proyectofinal.proyectofinal;
 
 import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.model.ChatUser;
+import com.proyectofinal.proyectofinal.model.Conversation;
 import com.proyectofinal.proyectofinal.service.AppUserService;
 import com.proyectofinal.proyectofinal.service.ChatUserService;
+import com.proyectofinal.proyectofinal.service.ConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,6 +21,9 @@ public abstract class AbstractTest {
     @Autowired
     private ChatUserService chatUserService;
 
+    @Autowired
+    private ConversationService conversationService;
+
     public AppUser getBaseUser() {
         return appUserService.getByEmail("admin@root.com");
     }
@@ -30,5 +35,9 @@ public abstract class AbstractTest {
                 .build();
 
         return chatUserService.save(existingChatUser);
+    }
+
+    protected Conversation createSampleConversation() {
+        return conversationService.create(createSampleChatUser());
     }
 }
