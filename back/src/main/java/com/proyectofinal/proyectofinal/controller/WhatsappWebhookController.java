@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${whatsapp.webhook.path:/webhooks/whatsapp}")
+@RequestMapping("${whatsapp.webhook.path}")
 public class WhatsappWebhookController {
     private final WhatsappProperties props;
     private final WhatsappApiClient client;
