@@ -18,6 +18,7 @@ public class WhatsappWebhookController {
     private final WhatsappApiClient client;
     private final MessageService messageService;
     private final ObjectMapper mapper = new ObjectMapper();
+    private static final String FORBIDDEN_MESSAGE = "Forbidden";
 
     @GetMapping
     public ResponseEntity<String> verify(
@@ -27,7 +28,7 @@ public class WhatsappWebhookController {
         if ("subscribe".equals(mode) && props.getVerifyToken().equals(token)) {
             return ResponseEntity.ok(challenge);
         }
-        return ResponseEntity.status(403).body("Forbidden");
+        return ResponseEntity.status(403).body(FORBIDDEN_MESSAGE);
     }
 
     @PostMapping
