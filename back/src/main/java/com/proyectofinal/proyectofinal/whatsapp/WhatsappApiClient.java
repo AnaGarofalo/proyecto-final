@@ -17,13 +17,14 @@ public class WhatsappApiClient {
     private final RestClient whatsappRestClient;
     private final WhatsappProperties props;
     private final ObjectMapper mapper = new ObjectMapper();
+    private static final String PROPERTY_TYPE_TEXT = "text";
 
     public String sendText(String toWaId, String text) {
         ObjectNode body = mapper.createObjectNode();
         body.put("messaging_product", "whatsapp");
         body.put("to", toWaId);
-        body.put("type", "text");
-        body.set("text", mapper.valueToTree(Map.of("preview_url", false, "body", text)));
+        body.put("type", PROPERTY_TYPE_TEXT);
+        body.set(PROPERTY_TYPE_TEXT, mapper.valueToTree(Map.of("preview_url", false, "body", text)));
 
         return whatsappRestClient.post()
                 .uri("/{phoneId}/messages", props.getPhoneNumberId())
