@@ -16,24 +16,32 @@ const Login: React.FC = () => {
     resolver: zodResolver(loginSchema),
   })
 
-  const login: SubmitHandler<AppUserLogin> = (data: AppUserLogin) => {
-    AppUserService.login(data)
-      .then((res) => {
-        navigate(NavigationRoute.DASHBOARD)
-        ToastUtil.success("Login exitoso");
-      })
-      .catch((e) =>  ToastUtil.error(e.message))
+  const login: SubmitHandler<AppUserLogin> = async (data: AppUserLogin) => {
+    try {
+  const res = await AppUserService.login(data)
+  if (res.data.token) {
+    localStorage.setItem('access_token', res.data.token)
   }
-
+  ToastUtil.success("Login exitoso");
+  navigate(NavigationRoute.DASHBOARD)
+} catch (e: unknown) {
+  const errorMsg =
+    typeof e === "object" && e !== null && "message" in e
+      ? (e as { message?: string }).message
+      : "Error al iniciar sesión";
+  ToastUtil.error(errorMsg || "Error al iniciar sesión");
+}
+  }
   return (
     <form onSubmit={handleSubmit(login)} style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
       <BaseInput
         label="Email"
-        type="text"
+        type="email"
         {...register('email')}
         error={!!errors.email}
         errorMessage={errors.email?.message}
         margin="normal"
+        required
       />
 
       <BaseInput
@@ -43,6 +51,7 @@ const Login: React.FC = () => {
         error={!!errors.password}
         errorMessage={errors.password?.message}
         margin="normal"
+        required
       />
 
       <BaseButton type="submit" disabled={isSubmitting} sx={{ mt: 2 }}>

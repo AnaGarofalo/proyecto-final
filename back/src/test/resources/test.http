@@ -2,8 +2,8 @@ POST http://localhost:8080/app-user
 Content-Type: application/json
 
 {
-  "email": "usuario@proyectofinal.com",
-  "password": "miclave123"
+  "email": "usuariotest2@proyectofinal.com",
+  "password": "Usuariotest2"
 }
 
 ### LOGIN 
@@ -12,8 +12,8 @@ POST http://localhost:8080/app-user/login
 Content-Type: application/json
 
 {
-  "email": "usuario@proyectofinal.com",
-  "password": "TuPassword1"
+  "email": "usuariotest1@proyectofinal.com",
+  "password": "Usuariotest1"
 }
 
 ### GET ALL USERS

@@ -21,10 +21,9 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<AppUser> findActiveByEmail(String email) {
-        return repository.findByExternalIdAndDeletedAtIsNull(email);
-    }
-
+   public Optional<AppUser> findActiveByEmail(String email) {
+    return repository.findByEmailAndDeletedAtIsNull(email);
+}
     public AppUser getByEmail(String email) {
         return findActiveByEmail(email)
                 .orElseThrow(() -> new PFNotFoundException(email, "email", AppUser.class));
@@ -56,7 +55,7 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     }
 
 
-    // Delete lógico por email
+   
     public void softDeleteByExternalId(String externalId) {
     AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
         .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));

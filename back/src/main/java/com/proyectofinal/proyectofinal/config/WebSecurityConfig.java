@@ -21,9 +21,9 @@ public class WebSecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/app-user/login").permitAll()// solo permite login
-                .anyRequest().authenticated() // El resto requiere JWT
-            )
+    .requestMatchers("/app-user/login", "/app-user").permitAll() // Permite login y registro sin token
+    .anyRequest().authenticated()
+)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

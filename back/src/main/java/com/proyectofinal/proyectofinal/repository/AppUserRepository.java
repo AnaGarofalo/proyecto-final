@@ -11,6 +11,8 @@ import java.util.List;
 public interface AppUserRepository extends AbstractRepository<AppUser> {
    Optional<AppUser> findByExternalIdAndDeletedAtIsNull(String externalId);
 
+   Optional<AppUser> findByEmailAndDeletedAtIsNull(String email);
+
     // Buscar todos los usuarios no eliminados (activos)
     List<AppUser> findByDeletedAtIsNull();
 
