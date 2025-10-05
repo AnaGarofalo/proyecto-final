@@ -6,14 +6,14 @@ import java.nio.charset.StandardCharsets;
 
 public class SignatureUtil {
     private SignatureUtil(){}
-    private static final String algorithm = "HmacSHA256";
+    private static final String ALGORITHM = "HmacSHA256";
 
     public static boolean isValidHmacSha256(String header, String body, String appSecret) {
         try {
             if (header == null || !header.startsWith("sha256=")) return false;
             String expected = header.substring(7);
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(new SecretKeySpec(appSecret.getBytes(StandardCharsets.UTF_8), algorithm));
+            Mac mac = Mac.getInstance(ALGORITHM);
+            mac.init(new SecretKeySpec(appSecret.getBytes(StandardCharsets.UTF_8), ALGORITHM));
             byte[] hmac = mac.doFinal(body.getBytes(StandardCharsets.UTF_8));
             String calc = toHex(hmac);
             return slowEquals(expected, calc);
