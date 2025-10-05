@@ -7,18 +7,19 @@ import com.proyectofinal.proyectofinal.service.MessageService;
 import com.proyectofinal.proyectofinal.utils.SignatureUtil;
 import com.proyectofinal.proyectofinal.whatsapp.WhatsappApiClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${whatsapp.webhook.path}")
 public class WhatsappWebhookController {
     private final WhatsappProperties props;
     private final WhatsappApiClient client;
-    private final MessageService messageService;
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final String FORBIDDEN_MESSAGE = "Forbidden";
+    private static final String FORBIDDEN_MESSAGE = "INVALID ACCESS";
 
     @GetMapping
     public ResponseEntity<String> verify(
@@ -42,24 +43,42 @@ public class WhatsappWebhookController {
 
         try {
             JsonNode root = mapper.readTree(payload);
-            JsonNode changes = root.path("entry").get(0).path("changes").get(0);
-            JsonNode messages = changes.path("value").path("messages");
-            if (messages.isArray() && messages.size() > 0) {
-                JsonNode msg = messages.get(0);
-                String from = msg.path("from").asText();
-                String text = msg.path("text").path("body").asText("");
+            JsonNode messages = root.path("entry").get(0).path("changes").get(0).path("value").path("messages");
 
-                if (!text.isBlank()) {
-                    String answer = messageService.getResponseForMessage(text, from);
-                    if (answer == null || answer.isBlank()) {
-                        answer = "Recibido ✅";
-                    }
+            if (messages.isArray() && !messages.isEmpty()) {
+                for (JsonNode msg : messages) {
+                    String from = msg.path("from").asText();
+                    String text = extractUserText(msg);
+
+                    String answer = (text == null || text.isBlank())
+                            ? "Recibido ✅"
+                            : "Nestlé Agent: " + text;
+
+                    log.info("WA IN from={} text='{}' -> replying='{}'", from, text, answer);
                     client.sendText(from, answer);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error procesando webhook WhatsApp", e);
         }
+
         return ResponseEntity.ok().build();
+    }
+
+    private String extractUserText(JsonNode msg) {
+        String type = msg.path("type").asText("");
+        switch (type) {
+            case "text":
+                return msg.path("text").path("body").asText("");
+            case "button":
+                return msg.path("button").path("text").asText("");
+            case "interactive":
+                JsonNode i = msg.path("interactive");
+                if (i.has("button_reply")) return i.path("button_reply").path("title").asText("");
+                if (i.has("list_reply"))   return i.path("list_reply").path("title").asText("");
+                return "";
+            default:
+                return "";
+        }
     }
 }
