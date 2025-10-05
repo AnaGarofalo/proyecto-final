@@ -64,31 +64,20 @@ public class AppUserController {
     }
 
     // Actualizar usuario (email y password)
-    @PutMapping("/{email}")
-    public ResponseEntity<AppUserMinimalDTO> updateUser(@PathVariable String email, @RequestBody AppUserLoginDTO dto) {
-        UserValidation.validateEmail(email); // email original
-        UserValidation.validateEmail(dto.getEmail()); // nuevo email
-        UserValidation.validatePassword(dto.getPassword());
-        AppUser updatedUser = appUserService.updateEmailAndPassword(email, dto.getEmail(), dto.getPassword());
-        AppUserMinimalDTO responseDto = EntityMapper.map(updatedUser, AppUserMinimalDTO.class);
-        return ResponseEntity.ok(responseDto);
-    }
+@PutMapping("/{externalId}")
+public ResponseEntity<AppUserMinimalDTO> updateUser(@PathVariable String externalId, @RequestBody AppUserLoginDTO dto) {
+    UserValidation.validateEmail(dto.getEmail());
+    UserValidation.validatePassword(dto.getPassword());
+    AppUser updatedUser = appUserService.updateEmailAndPasswordByExternalId(externalId, dto.getEmail(), dto.getPassword());
+    AppUserMinimalDTO responseDto = EntityMapper.map(updatedUser, AppUserMinimalDTO.class);
+    return ResponseEntity.ok(responseDto);
+}
 
-    // Delete lógico por email
-    @DeleteMapping("/{email}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String email) {
-        UserValidation.validateEmail(email);
-        appUserService.softDeleteByEmail(email);
-        return ResponseEntity.noContent().build();
-    }
+    // Delete lógico por externalId
+@DeleteMapping("/{externalId}")
+public ResponseEntity<Void> deleteUser(@PathVariable String externalId) {
+    appUserService.softDeleteByExternalId(externalId);
+    return ResponseEntity.noContent().build();
+}
 
-    // Resetear password por email
-    @PutMapping("/{email}/reset-password")
-    public ResponseEntity<AppUserMinimalDTO> resetPassword(@PathVariable String email, @RequestBody AppUserLoginDTO dto) {
-        UserValidation.validateEmail(email);
-        UserValidation.validatePassword(dto.getPassword());
-        AppUser updatedUser = appUserService.resetPassword(email, dto.getPassword());
-        AppUserMinimalDTO responseDto = EntityMapper.map(updatedUser, AppUserMinimalDTO.class);
-        return ResponseEntity.ok(responseDto);
-    }
 }

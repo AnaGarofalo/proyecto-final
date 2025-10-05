@@ -7,6 +7,7 @@ import com.proyectofinal.proyectofinal.repository.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     }
 
     public Optional<AppUser> findActiveByEmail(String email) {
-        return repository.findByEmailAndDeletedAtIsNull(email);
+        return repository.findByExternalIdAndDeletedAtIsNull(email);
     }
 
     public AppUser getByEmail(String email) {
@@ -40,8 +41,9 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         return repository.save(modelToCreate);
     }
 
-    public AppUser updateEmailAndPassword(String currentEmail, String newEmail, String newPassword) {
-    AppUser user = getByEmail(currentEmail);
+    public AppUser updateEmailAndPasswordByExternalId(String externalId, String newEmail, String newPassword) {
+    AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
+        .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
     user.setEmail(newEmail);
     user.setPassword(passwordEncoder.encode(newPassword));
     return repository.save(user);
@@ -53,23 +55,14 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         return repository.findByDeletedAtIsNull();
     }
 
-    // Actualizar password de usuario por email
-    public AppUser updatePassword(String email, String newPassword) {
-        AppUser user = getByEmail(email);
-        user.setPassword(passwordEncoder.encode(newPassword));
-        return repository.save(user);
-    }
 
     // Delete lógico por email
-    public void softDeleteByEmail(String email) {
-        AppUser user = getByEmail(email);
-        user.setDeletedAt(java.time.LocalDateTime.now());
-        repository.save(user);
-    }
+    public void softDeleteByExternalId(String externalId) {
+    AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
+        .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
+    user.setDeletedAt(LocalDateTime.now());
+    repository.save(user);
+}
 
-    // Resetear password por email
-    public AppUser resetPassword(String email, String newPassword) {
-        return updatePassword(email, newPassword);
-    }
 
 }

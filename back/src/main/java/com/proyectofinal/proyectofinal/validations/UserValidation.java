@@ -16,7 +16,7 @@ public class UserValidation {
             || password.contains(" ")
             || !password.matches(".*[A-Z].*")
             || !password.matches(".*\\d.*")) {
-            throw new IllegalArgumentException("valid password format");
+            throw new IllegalArgumentException("invalid password format");
         }
     }
 }
