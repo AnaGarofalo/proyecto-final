@@ -63,21 +63,21 @@ public class AppUserController {
         return ResponseEntity.ok(dto);
     }
 
-    // Actualizar usuario (email y password)
-@PutMapping("/{externalId}")
-public ResponseEntity<AppUserMinimalDTO> updateUser(@PathVariable String externalId, @RequestBody AppUserLoginDTO dto) {
-    UserValidation.validateEmail(dto.getEmail());
-    UserValidation.validatePassword(dto.getPassword());
-    AppUser updatedUser = appUserService.updateEmailAndPasswordByExternalId(externalId, dto.getEmail(), dto.getPassword());
-    AppUserMinimalDTO responseDto = EntityMapper.map(updatedUser, AppUserMinimalDTO.class);
-    return ResponseEntity.ok(responseDto);
-}
+    // Actualizar usuario (solo email)
+    @PutMapping("/{externalId}")
+    public ResponseEntity<AppUserMinimalDTO> updateUser(@PathVariable String externalId,
+            @RequestBody AppUserLoginDTO dto) {
+        UserValidation.validateEmail(dto.getEmail());
+        AppUser updatedUser = appUserService.updateEmailByExternalId(externalId, dto.getEmail());
+        AppUserMinimalDTO responseDto = EntityMapper.map(updatedUser, AppUserMinimalDTO.class);
+        return ResponseEntity.ok(responseDto);
+    }
 
     // Delete lógico por externalId
-@DeleteMapping("/{externalId}")
-public ResponseEntity<Void> deleteUser(@PathVariable String externalId) {
-    appUserService.softDeleteByExternalId(externalId);
-    return ResponseEntity.noContent().build();
-}
+    @DeleteMapping("/{externalId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String externalId) {
+        appUserService.softDeleteByExternalId(externalId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

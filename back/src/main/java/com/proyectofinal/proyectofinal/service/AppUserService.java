@@ -21,9 +21,10 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         this.passwordEncoder = passwordEncoder;
     }
 
-   public Optional<AppUser> findActiveByEmail(String email) {
-    return repository.findByEmailAndDeletedAtIsNull(email);
-}
+    public Optional<AppUser> findActiveByEmail(String email) {
+        return repository.findByEmailAndDeletedAtIsNull(email);
+    }
+
     public AppUser getByEmail(String email) {
         return findActiveByEmail(email)
                 .orElseThrow(() -> new PFNotFoundException(email, "email", AppUser.class));
@@ -32,7 +33,8 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     public AppUser create(AppUserLoginDTO creationDTO) {
         Optional<AppUser> opExistingUser = findActiveByEmail(creationDTO.getEmail());
         if (opExistingUser.isPresent()) {
-            throw new IllegalArgumentException(String.format("AppUser with email %s already exists", creationDTO.getEmail()));
+            throw new IllegalArgumentException(
+                    String.format("AppUser with email %s already exists", creationDTO.getEmail()));
         }
 
         String encodedPassword = passwordEncoder.encode(creationDTO.getPassword());
@@ -40,28 +42,23 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         return repository.save(modelToCreate);
     }
 
-    public AppUser updateEmailAndPasswordByExternalId(String externalId, String newEmail, String newPassword) {
-    AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
-        .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
-    user.setEmail(newEmail);
-    user.setPassword(passwordEncoder.encode(newPassword));
-    return repository.save(user);
-}
-
+    public AppUser updateEmailByExternalId(String externalId, String newEmail) {
+        AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
+                .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
+        user.setEmail(newEmail);
+        return repository.save(user);
+    }
 
     // Obtener todos los usuarios activos (no eliminados)
     public List<AppUser> findAllActive() {
         return repository.findByDeletedAtIsNull();
     }
 
-
-   
     public void softDeleteByExternalId(String externalId) {
-    AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
-        .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
-    user.setDeletedAt(LocalDateTime.now());
-    repository.save(user);
-}
-
+        AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
+                .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
+        user.setDeletedAt(LocalDateTime.now());
+        repository.save(user);
+    }
 
 }

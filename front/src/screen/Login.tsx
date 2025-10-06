@@ -18,20 +18,18 @@ const Login: React.FC = () => {
 
   const login: SubmitHandler<AppUserLogin> = async (data: AppUserLogin) => {
     try {
-  const res = await AppUserService.login(data)
-  if (res.data.token) {
-    localStorage.setItem('access_token', res.data.token)
+      const res = await AppUserService.login(data)
+      if (res.data.token) {
+        localStorage.setItem('access_token', res.data.token)
+      }
+      ToastUtil.success("Login exitoso");
+      navigate(NavigationRoute.DASHBOARD)
+    } catch (e) {
+      ToastUtil.error("Error al iniciar sesión");
+      console.error(e);
+    }
   }
-  ToastUtil.success("Login exitoso");
-  navigate(NavigationRoute.DASHBOARD)
-} catch (e: unknown) {
-  const errorMsg =
-    typeof e === "object" && e !== null && "message" in e
-      ? (e as { message?: string }).message
-      : "Error al iniciar sesión";
-  ToastUtil.error(errorMsg || "Error al iniciar sesión");
-}
-  }
+
   return (
     <form onSubmit={handleSubmit(login)} style={{ maxWidth: 400, margin: 'auto', padding: 20 }}>
       <BaseInput
