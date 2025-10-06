@@ -39,7 +39,7 @@ const Sidebar = () => {
         [`& .MuiDrawer-paper`]: {
           width: drawerWidth,
           backgroundColor: Colors.PRIMARY_DARK_BLUE,
-          color: "white",
+          color: Colors.SEPTENARY_WHITE,
           boxSizing: "border-box",
         },
       }}
@@ -56,14 +56,14 @@ const Sidebar = () => {
               onClick={() => navigate(item.path)}
               sx={{
                 "&.Mui-selected": {
-                  backgroundColor: Colors.PRIMARY_DARK_BLUE ?? "#155A8A",
+                  backgroundColor: Colors.PRIMARY_DARK_BLUE,
                 },
                 "&:hover": {
-                  backgroundColor: Colors.SECONDARY_LIGHT_BLUE ?? "#1E7BBE",
+                  backgroundColor: Colors.SECONDARY_LIGHT_BLUE,
                 },
               }}
             >
-              <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ color: Colors.SEPTENARY_WHITE }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           ))}
@@ -79,7 +79,7 @@ const Sidebar = () => {
               },
             }}
           >
-            <ListItemIcon sx={{ color: "white" }}>
+            <ListItemIcon sx={{ color: Colors.SEPTENARY_WHITE }}>
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText primary="Cerrar sesión" />
