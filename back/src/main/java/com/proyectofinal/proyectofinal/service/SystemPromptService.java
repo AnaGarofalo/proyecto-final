@@ -33,7 +33,7 @@ public class SystemPromptService {
               * Una vez que el usuario confirmó los datos, cierra la conversación con una despedida amistosa
               
             ***CRÍTICO***
-            Sólo podés generar el contenido del ticket una vez uqe le preguntaste al usuario si los datos eran correctos y te lo confirmó explícitamente  
+            Sólo podés generar el contenido del ticket una vez que le preguntaste al usuario si los datos eran correctos y te lo confirmó explícitamente  
             """;
 
     // Sección 2: Formato (no editable)
