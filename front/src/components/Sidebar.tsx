@@ -1,0 +1,93 @@
+import {
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Box,
+} from "@mui/material";
+import HomeIcon from "@mui/icons-material/HomeFilled";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import DescriptionIcon from "@mui/icons-material/Description";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PeopleIcon from "@mui/icons-material/People";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Colors } from "../utils/Colors";
+
+const drawerWidth = 240;
+const headerHeight = 120;
+
+const Sidebar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuItems = [
+    { text: "Inicio", icon: <HomeIcon />, path: "/homepage" },
+    { text: "Editar Prompt", icon: <EditNoteIcon />, path: "/editprompt" },
+    { text: "Documentos", icon: <DescriptionIcon />, path: "/documents" },
+    { text: "Usuarios chat", icon: <WhatsAppIcon />, path: "/chatusers" },
+    { text: "Usuarios", icon: <PeopleIcon />, path: "/users" },
+  ];
+
+  return (
+    <Drawer
+      variant="permanent"
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        [`& .MuiDrawer-paper`]: {
+          width: drawerWidth,
+          backgroundColor: Colors.PRIMARY_DARK_BLUE,
+          color: "white",
+          boxSizing: "border-box",
+        },
+      }}
+    >
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box sx={{ height: `${headerHeight}px` }} />
+
+        {/* Menú principal */}
+        <List>
+          {menuItems.map((item) => (
+            <ListItemButton
+              key={item.text}
+              selected={location.pathname === item.path}
+              onClick={() => navigate(item.path)}
+              sx={{
+                "&.Mui-selected": {
+                  backgroundColor: Colors.PRIMARY_DARK_BLUE ?? "#155A8A",
+                },
+                "&:hover": {
+                  backgroundColor: Colors.SECONDARY_LIGHT_BLUE ?? "#1E7BBE",
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          ))}
+        </List>
+
+        {/* ESTE BOTON NO TIENE LOGICA ALGUNA */}
+        <Box sx={{ mt: "auto", mb: 2 }}>
+          <ListItemButton
+            sx={{
+              backgroundColor: Colors.QUARTERNARY_DARK_GRAY,
+              "&:hover": {
+                backgroundColor: Colors.QUINARY_LIGHT_GRAY,
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: "white" }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Cerrar sesión" />
+          </ListItemButton>
+        </Box>
+      </Box>
+    </Drawer>
+  );
+};
+
+export default Sidebar;

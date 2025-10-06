@@ -1,5 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 import { Colors } from './Colors';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
 
 declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {
@@ -26,6 +30,24 @@ export const appTheme = createTheme({
   },
   shape: { borderRadius: 10 },
   // Tipografías: deje valores por defecto
+
+  typography: {
+    fontFamily: "'Poppins', sans-serif",
+    fontWeightLight: 400,
+    fontWeightRegular: 500,
+    fontWeightMedium: 600,
+    fontWeightBold: 700,
+    h1: { fontWeight: 700 },
+    h2: { fontWeight: 600 },
+    h3: { fontWeight: 600 },
+    h4: { fontWeight: 500 },
+    h5: { fontWeight: 500 },
+    h6: { fontWeight: 500 },
+    body1: { fontWeight: 400 },
+    body2: { fontWeight: 400 },
+    button: { fontWeight: 600, textTransform: 'none' },
+  },
+
   components: {
     MuiButton: {
       styleOverrides: {
