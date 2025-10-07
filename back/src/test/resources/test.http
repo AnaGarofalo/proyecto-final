@@ -1,0 +1,41 @@
+POST http://localhost:8080/app-user
+Content-Type: application/json
+
+{
+  "email": "usuariotest2@proyectofinal.com",
+  "password": "Usuariotest2"
+}
+
+### LOGIN 
+
+POST http://localhost:8080/app-user/login
+Content-Type: application/json
+
+{
+  "email": "usuariotest1@proyectofinal.com",
+  "password": "Usuariotest1"
+}
+
+### GET ALL USERS
+GET http://localhost:8080/app-user/usuario@proyectofinal.com
+
+### UPDATE USER
+
+PUT http://localhost:8080/app-user/usuario@proyectofinal.com
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvQHByb3llY3RvZmluYWwuY29tIiwiaWF0IjoxNzU5NTg3NDU4LCJleHAiOjE3NTk2NzM4NTh9.QqMYUatix4j2XdDHCkUSU33vxy3WSq_e9wOv0ydmAiP3_22_5Swh7Jcw2mVWc8QyYsL76F-UoRKt3j0eVACBIg
+Content-Type: application/json
+
+{
+  "email": "nuevoema",
+  "password": "NuevaPass1"
+}
+
+### RESET PASWORD
+
+PUT http://localhost:8080/app-user/usuario@proyectofinal.com/reset-password
+Content-Type: application/json
+
+{
+  "email": "usuario@proyectofinal.com",
+  "password": "1"
+}
