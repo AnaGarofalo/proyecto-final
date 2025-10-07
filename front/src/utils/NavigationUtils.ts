@@ -1,5 +1,4 @@
 export const NavigationRoute = {
-  DASHBOARD: "/dashboard",
   LOGIN: "/",
   HOMEPAGE: "/homepage",
   EDITPROMPT: "/editprompt",

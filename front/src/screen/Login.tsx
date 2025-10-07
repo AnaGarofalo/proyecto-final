@@ -23,7 +23,7 @@ const Login: React.FC = () => {
         localStorage.setItem('access_token', res.data.token)
       }
       ToastUtil.success("Login exitoso");
-      navigate(NavigationRoute.DASHBOARD)
+      navigate(NavigationRoute.HOMEPAGE)
     } catch (e) {
       ToastUtil.error("Error al iniciar sesión");
       console.error(e);

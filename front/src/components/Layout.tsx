@@ -2,6 +2,7 @@ import { Box, Toolbar } from "@mui/material";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
+import { Colors } from "../utils/Colors";
 
 const Layout = () => {
   return (
@@ -12,7 +13,7 @@ const Layout = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: (theme) => theme.palette.common.white,
+          bgcolor: Colors.SEPTENARY_WHITE,
           p: 3,
         }}
       >
