@@ -28,10 +28,17 @@ public class AppUserController {
     public ResponseEntity<?> login(@RequestBody AppUserLoginDTO appUserLoginDTO) {
         UserValidation.validateEmail(appUserLoginDTO.getEmail());
         UserValidation.validatePassword(appUserLoginDTO.getPassword());
-        AppUser appUser = appUserService.getByEmail(appUserLoginDTO.getEmail());
-        // Aquí deberías validar la contraseña también
-        String token = jwtUtil.generateToken(appUser.getEmail());
-        return ResponseEntity.ok(Map.of("token", token));
+        
+        try {
+            AppUser appUser = appUserService.validateLogin(
+                appUserLoginDTO.getEmail(), 
+                appUserLoginDTO.getPassword()
+            );
+            String token = jwtUtil.generateToken(appUser.getEmail());
+            return ResponseEntity.ok(Map.of("token", token));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     // Crear usuario
