@@ -1,5 +1,6 @@
 package com.proyectofinal.proyectofinal.services;
 
+import com.proyectofinal.proyectofinal.AbstractTest;
 import com.proyectofinal.proyectofinal.service.SystemPromptService;
 import com.proyectofinal.proyectofinal.types.IAResponseKeys;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SystemPromptServiceTest {
+class SystemPromptServiceTest extends AbstractTest {
 
     @Autowired
     SystemPromptService systemPromptService;

@@ -62,4 +62,36 @@ class ChatUserServiceTest extends AbstractTest {
         assertTrue(result.isBlocked());
         assertEquals(existingChatUser.getId(), result.getId());
     }
+
+    @Test
+    void unblock_userNotFound() {
+        assertThrows(PFNotFoundException.class, () -> chatUserService.unblock("fake-id"));
+    }
+
+    @Test
+    void unblock_success() {
+        ChatUser existingChatUser = createSampleChatUser();
+
+        ChatUser result = chatUserService.markAsBlocked(existingChatUser.getExternalId());
+        assertTrue(result.isBlocked());
+        assertEquals(existingChatUser.getId(), result.getId());
+
+        result = chatUserService.unblock(existingChatUser.getExternalId());
+        assertFalse(result.isBlocked());
+        assertEquals(existingChatUser.getId(), result.getId());
+    }
+
+    @Test
+    void markAsDeleted_userNotFound() {
+        assertThrows(PFNotFoundException.class, () -> chatUserService.markAsDeleted("fake-id"));
+    }
+
+    @Test
+    void markAsDeleted_success() {
+        ChatUser existingChatUser = createSampleChatUser();
+
+        ChatUser result = chatUserService.markAsDeleted(existingChatUser.getExternalId());
+        assertNotNull(result.getDeletedAt());
+        assertEquals(existingChatUser.getId(), result.getId());
+    }
 }
