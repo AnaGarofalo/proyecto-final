@@ -1,10 +1,7 @@
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import nestleLogo from "../assets/logo/nestleLogo.png";
 import { Colors } from "../utils/Colors";
-
-// Constantes para mantener consistencia con el Sidebar
-const drawerWidth = 240;
-const headerHeight = 120;
+import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
 
 const Header = () => {
   return (
@@ -13,9 +10,9 @@ const Header = () => {
       sx={{
         backgroundColor: Colors.QUARTERNARY_DARK_GRAY,
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        width: `calc(100% - ${drawerWidth}px)`,
-        ml: `${drawerWidth}px`,
-        height: `${headerHeight}px`,
+        width: `calc(100% - ${DRAWER_WIDTH_PX}px)`,
+        ml: `${DRAWER_WIDTH_PX}px`,
+        height: `${HEADER_HEIGHT_PX}px`,
       }}
     >
       <Toolbar
@@ -23,7 +20,7 @@ const Header = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          minHeight: `${headerHeight}px !important`,
+          minHeight: `${HEADER_HEIGHT_PX}px !important`,
           px: 3,
         }}
       >
