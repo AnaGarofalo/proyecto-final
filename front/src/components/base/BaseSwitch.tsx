@@ -1,5 +1,4 @@
 import React from 'react';
-import { Colors } from '../../utils/Colors';
 import './base-switch.css';
 
 interface BaseSwitchProps {
@@ -22,7 +21,7 @@ export const BaseSwitch: React.FC<BaseSwitchProps> = ({
   };
 
   return (
-       <div
+    <div
       role="switch"
       aria-checked={checked}
       tabIndex={disabled ? -1 : 0}

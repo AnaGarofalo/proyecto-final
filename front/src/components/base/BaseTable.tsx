@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Paper } from '@mui/material';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import './base-table.css';
 
 export interface Column<T> {
   field?: keyof T;
@@ -24,7 +25,7 @@ export function BaseTable<T>({
   columns,
   rows,
   getRowId,
-  pageSize = 10,
+  pageSize = 15,
   autoHeight = true,
 }: BaseTableProps<T>) {
   const gridColumns: GridColDef[] = columns.map((col) => ({
@@ -37,19 +38,25 @@ export function BaseTable<T>({
     headerAlign: col.align as any,
     renderCell: (params) => {
       const value = params.row[col.field];
-      return col.render ? <Box sx={{ width: "100%", height: "100%", display:"flex", alignItems:"center"}}>{col.render(value, params.row)}</Box>: String(value ?? '');
+      return col.render ? (
+        <Box className="custom-cell">
+          {col.render(value, params.row)}
+        </Box>
+      ) : (
+        String(value ?? '')
+      );
     },
   }));
 
   return (
-  <Paper sx={{ width: '100%' }}>
+    <Paper className="base-table-paper" elevation={0}>
       <DataGrid
-        sx={{ width: '100%' }}
+        className="base-table-data-grid"
         autoHeight={autoHeight}
         rows={rows}
         columns={gridColumns}
         getRowId={getRowId ?? ((row) => (row as any).id ?? JSON.stringify(row))}
-        pageSizeOptions={[5, 10, 25, 50]}
+        pageSizeOptions={[10, 15, 25, 50]}
         initialState={{
           pagination: { paginationModel: { pageSize, page: 0 } },
         }}
@@ -58,6 +65,6 @@ export function BaseTable<T>({
           noRowsLabel: 'No hay datos disponibles',
         }}
       />
-    </Paper>  
+    </Paper>
   );
 }
