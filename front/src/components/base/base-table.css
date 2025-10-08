@@ -8,6 +8,9 @@
 .base-table-paper {
     width: 100%;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .base-table-data-grid {
