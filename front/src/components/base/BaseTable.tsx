@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Paper } from '@mui/material';
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import './base-table.css';
+import BaseInput from './BaseInput';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import z from 'zod';
 
 export interface Column<T> {
   field?: keyof T;
@@ -19,7 +23,17 @@ interface BaseTableProps<T> {
   pageSize?: number;
   autoHeight?: boolean;
   getRowId?: (row: T) => string | number;
+  searchFields?: (keyof T)[];
+  searchPlaceholder?: string;
 }
+
+interface SearchForm {
+  value: string;
+}
+
+export const searchSchema = z.object({
+  value: z.string(),
+})
 
 export function BaseTable<T>({
   columns,
@@ -27,7 +41,32 @@ export function BaseTable<T>({
   getRowId,
   pageSize = 15,
   autoHeight = true,
+  searchFields = [],
+  searchPlaceholder,
 }: BaseTableProps<T>) {
+  const [filteredRows, setFilteredRows] = useState<T[]>([]);
+  const { register, watch } = useForm<SearchForm>({
+    resolver: zodResolver(searchSchema),
+    defaultValues: {
+      value: ""
+    }
+  })
+
+  function getFilteredRows(originalArray: T[]) {
+    return originalArray.filter(row => searchFields.some(field => (row[field] as string).includes(searchValue)));
+  }
+
+  const searchValue = watch('value');
+  
+  useEffect(() => {
+    if (searchValue.length && searchFields.length) {
+      setFilteredRows(getFilteredRows(rows))
+    } else {
+      setFilteredRows(rows);
+    }
+  }, [rows, searchValue])
+
+
   const gridColumns: GridColDef[] = columns.map((col) => ({
     field: col.field as string,
     headerName: col.label,
@@ -50,10 +89,18 @@ export function BaseTable<T>({
 
   return (
     <Paper className="base-table-paper" elevation={0}>
+      {!!searchFields.length && 
+        <form>
+          <BaseInput
+            {...register('value')}
+            placeholder={searchPlaceholder ?? ""} />
+          
+        </form>
+      }
       <DataGrid
         className="base-table-data-grid"
         autoHeight={autoHeight}
-        rows={rows}
+        rows={filteredRows}
         columns={gridColumns}
         getRowId={getRowId ?? ((row) => (row as any).id ?? JSON.stringify(row))}
         pageSizeOptions={[10, 15, 25, 50]}

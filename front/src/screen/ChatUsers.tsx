@@ -60,5 +60,7 @@ export default function ChatUsers() {
   return <BaseTable
     columns={columns}
     rows={chatUsers}
+    searchFields={['email', 'phoneNumber']}
+    searchPlaceholder="Buscar por correo electrónico o número de celular"
   />
 }
