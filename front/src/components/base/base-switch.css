@@ -1,0 +1,67 @@
+.base-switch {
+  position: relative;
+  width: 60px;
+  height: 26px;
+  border-radius: 17px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  outline: none;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.base-switch.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.base-switch.checked {
+  background-color: var(--color-septenary-white);
+  border-color: var(--color-quarternary-dark-gray);
+}
+
+.base-switch.unchecked {
+  background-color: var(--color-quarternary-dark-gray);
+  border-color: var(--color-septenary-white);
+}
+
+.base-switch-thumb {
+  position: absolute;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transition: left 0.3s, background-color 0.3s;
+}
+
+.base-switch-thumb.checked {
+  left: 36px;
+  background-color: var(--color-quarternary-dark-gray);
+}
+
+.base-switch-thumb.unchecked {
+  left: 4px;
+  background-color: var(--color-septenary-white);
+}
+
+.base-switch-label {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 600;
+  user-select: none;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.base-switch-label.checked {
+  color: var(--color-quarternary-dark-gray);
+  left: 8px;
+  right: auto;
+}
+
+.base-switch-label.unchecked {
+  color: var(--color-septenary-white);
+  left: auto;
+  right: 8px;
+}

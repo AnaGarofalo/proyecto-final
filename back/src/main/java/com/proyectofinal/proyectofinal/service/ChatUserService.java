@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,20 @@ public class ChatUserService extends AbstractService<ChatUser, ChatUserRepositor
         return repository.save(chatUser);
     }
 
+    public ChatUser unblock(String externalId) {
+        ChatUser chatUser = getByExternalId(externalId);
+
+        chatUser.setBlockedAt(null);
+        return repository.save(chatUser);
+    }
+
+    public ChatUser markAsDeleted(String externalId) {
+        ChatUser chatUser = getByExternalId(externalId);
+
+        chatUser.setDeletedAt(LocalDateTime.now());
+        return repository.save(chatUser);
+    }
+
     private ChatUser create(String email, String phone) {
         if (!isValidEmail(email)) {
             return null;
@@ -53,5 +68,9 @@ public class ChatUserService extends AbstractService<ChatUser, ChatUserRepositor
 
     private boolean isValidEmail(String email) {
         return !StringUtils.isEmpty(email) && email.matches("^[a-zA-Z0-9._%+-]+@" + validEmailDomain + "\\.com$");
+    }
+
+    public List<ChatUser> getAllActive() {
+        return repository.findByDeletedAtIsNull();
     }
 }

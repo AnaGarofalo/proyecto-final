@@ -16,8 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Colors } from "../utils/Colors";
 import { NavigationRoute } from "../utils/NavigationUtils";
 
-const drawerWidth = 240;
-const headerHeight = 120;
+import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -44,10 +43,10 @@ const Sidebar = () => {
     <Drawer
       variant="permanent"
       sx={{
-        width: drawerWidth,
+        width: DRAWER_WIDTH_PX,
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: {
-          width: drawerWidth,
+          width: DRAWER_WIDTH_PX,
           backgroundColor: Colors.PRIMARY_DARK_BLUE,
           color: Colors.SEPTENARY_WHITE,
           boxSizing: "border-box",
@@ -55,7 +54,7 @@ const Sidebar = () => {
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <Box sx={{ height: `${headerHeight}px` }} />
+        <Box sx={{ height: `${HEADER_HEIGHT_PX}px` }} />
 
         {/* Menú principal */}
         <List>
