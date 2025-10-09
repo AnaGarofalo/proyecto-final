@@ -8,6 +8,7 @@ import EditPrompt from "./screen/EditPrompt";
 import Document from "./screen/Document";
 import ChatUsers from "./screen/ChatUsers";
 import Users from "./screen/Users";
+import DocumentSuccess from "./screen/DocumentSuccess";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
         <Route path={NavigationRoute.CHATUSERS} element={<ChatUsers />} />
         <Route path={NavigationRoute.USERS} element={<Users />} />
+        <Route path={NavigationRoute.DOCUMENTSUCCESS} element={<DocumentSuccess />} />
       </Route>
     </Routes>
   );

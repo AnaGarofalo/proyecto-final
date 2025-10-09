@@ -6,6 +6,7 @@ import BaseModal from "../components/base/BaseModal";
 import { Colors } from "../utils/Colors";
 import { getDocuments, uploadDocument } from "../service/DocumentService";
 import { BaseTable, type Column } from "../components/base/BaseTable";
+import { useNavigate } from "react-router-dom";
 
 interface DocumentItem {
   id: number;
@@ -18,6 +19,8 @@ const Documents: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
+
+  const navigate = useNavigate();
 
   //Cargar documentos desde el backend
   useEffect(() => {
@@ -61,6 +64,10 @@ const Documents: React.FC = () => {
       ]);
       setOpenModal(false);
       setSelectedFile(null);
+
+      // 🧭 Redirigir tras éxito
+      navigate("/documentsuccess");
+
     } catch (err) {
       console.error("Error al subir documento:", err);
       alert("Ocurrió un error al subir el archivo.");
