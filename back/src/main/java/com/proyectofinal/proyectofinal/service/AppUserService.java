@@ -30,6 +30,22 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
                 .orElseThrow(() -> new PFNotFoundException(email, "email", AppUser.class));
     }
 
+    // Método para validar login (email + password)
+    public AppUser validateLogin(String email, String password) {
+        AppUser user = getByEmail(email);
+        
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("invalid credentials");
+        }
+        
+        // Verificar si el usuario está bloqueado (A revisar, aun no definimos como se bloquea)
+        if (user.getBlockedAt() != null) {
+            throw new IllegalArgumentException("User is blocked");
+        }
+        
+        return user;
+    }
+
     public AppUser create(AppUserLoginDTO creationDTO) {
         Optional<AppUser> opExistingUser = findActiveByEmail(creationDTO.getEmail());
         if (opExistingUser.isPresent()) {

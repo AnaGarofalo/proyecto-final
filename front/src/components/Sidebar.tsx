@@ -14,6 +14,8 @@ import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Colors } from "../utils/Colors";
+import { NavigationRoute } from "../utils/NavigationUtils";
+
 import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
 
 const Sidebar = () => {
@@ -27,6 +29,15 @@ const Sidebar = () => {
     { text: "Usuarios chat", icon: <WhatsAppIcon />, path: "/chatusers" },
     { text: "Usuarios", icon: <PeopleIcon />, path: "/users" },
   ];
+  // Funcion para manejar el cierre de sesion 
+
+  const handleLogout = () => {
+    // Eliminar token del localStorage
+    localStorage.removeItem('access_token');
+
+    // Redirigir al login usando la ruta correcta
+    navigate(NavigationRoute.LOGIN);
+  };
 
   return (
     <Drawer
@@ -67,9 +78,10 @@ const Sidebar = () => {
           ))}
         </List>
 
-        {/* ESTE BOTON NO TIENE LOGICA ALGUNA */}
+        {/* Botón Cerrar sesión */}
         <Box sx={{ mt: "auto", mb: 2 }}>
           <ListItemButton
+            onClick={handleLogout}
             sx={{
               backgroundColor: Colors.QUARTERNARY_DARK_GRAY,
               "&:hover": {
@@ -89,3 +101,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
