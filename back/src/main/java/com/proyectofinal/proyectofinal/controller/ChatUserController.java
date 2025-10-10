@@ -1,8 +1,7 @@
 package com.proyectofinal.proyectofinal.controller;
 
-import com.proyectofinal.proyectofinal.dto.ChatUserDTO;
-import com.proyectofinal.proyectofinal.dto.app_user.AppUserMinimalDTO;
-import com.proyectofinal.proyectofinal.model.AppUser;
+import com.proyectofinal.proyectofinal.dto.chat_user.ChatUserDTO;
+import com.proyectofinal.proyectofinal.dto.chat_user.CreateChatUserDTO;
 import com.proyectofinal.proyectofinal.model.ChatUser;
 import com.proyectofinal.proyectofinal.service.ChatUserService;
 import com.proyectofinal.proyectofinal.utils.EntityMapper;
@@ -25,6 +24,12 @@ public class ChatUserController {
                 .map(user -> EntityMapper.map(user, ChatUserDTO.class))
                 .toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping
+    public ResponseEntity<ChatUserDTO> create(@RequestBody CreateChatUserDTO createChatUserDTO) {
+        ChatUser chatUser = chatUserService.getOrCreateForPhone(createChatUserDTO.getEmail(), createChatUserDTO.getPhoneNumber());
+        return ResponseEntity.ok(EntityMapper.map(chatUser, ChatUserDTO.class));
     }
 
     @PutMapping("/block/{externalId}")

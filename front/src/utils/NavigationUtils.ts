@@ -1,9 +1,10 @@
 export const NavigationRoute = {
   LOGIN: "/",
   HOMEPAGE: "/homepage",
-  EDITPROMPT: "/editprompt",
+  EDIT_PROMPT: "/edit-prompt",
   DOCUMENTS: "/documents",
-  CHATUSERS: "/chatusers",
+  CHAT_USERS: "/chat-users",
+  CHAT_USERS_SUCCESS: "/chat-users/success",
   USERS: "/users",
 } as const;
 

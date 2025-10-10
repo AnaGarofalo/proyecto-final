@@ -8,6 +8,7 @@ import EditPrompt from "./screen/EditPrompt";
 import Document from "./screen/Document";
 import ChatUsers from "./screen/ChatUsers";
 import Users from "./screen/Users";
+import SuccessScreen from "./screen/SuccessScreen";
 
 function App() {
   return (
@@ -15,9 +16,10 @@ function App() {
       <Route path={NavigationRoute.LOGIN} element={<Login />} />
       <Route element={<Layout />}>
         <Route path={NavigationRoute.HOMEPAGE} element={<HomePage />} />
-        <Route path={NavigationRoute.EDITPROMPT} element={<EditPrompt />} />
+        <Route path={NavigationRoute.EDIT_PROMPT} element={<EditPrompt />} />
         <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
-        <Route path={NavigationRoute.CHATUSERS} element={<ChatUsers />} />
+        <Route path={NavigationRoute.CHAT_USERS} element={<ChatUsers />} />
+        <Route path={NavigationRoute.CHAT_USERS_SUCCESS} element={<SuccessScreen title="Usuario creado con éxito" />} />
         <Route path={NavigationRoute.USERS} element={<Users />} />
       </Route>
     </Routes>

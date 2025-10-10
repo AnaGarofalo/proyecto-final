@@ -5,10 +5,14 @@ import { BaseTable, type Column } from "../components/base/BaseTable";
 import ChatUserService from "../service/ChatUserService";
 import { GridDeleteIcon } from "@mui/x-data-grid";
 import { BaseSwitch } from "../components/base/BaseSwitch";
+import BaseModal from "../components/base/BaseModal";
+import { Typography } from "@mui/material";
+import { AddChatUserModal } from "../components/AddChatUserModal";
 
 
 export default function ChatUsers() {
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
+  const [userToDelete, setUserToDelete] = useState<ChatUser | null>(null);
 
   async function toggleBlocked(isBlocked: boolean, externalId: string) {
     try {
@@ -28,6 +32,7 @@ export default function ChatUsers() {
     try {
       await ChatUserService.markAsDeleted(externalId);
       setChatUsers(current => current.filter((chatUser) => externalId !== chatUser.externalId))
+      setUserToDelete(null);
     } catch (error) {
       console.error(error);
       ToastUtil.error("No se pudo borrar al usario")
@@ -44,7 +49,7 @@ export default function ChatUsers() {
     },
     {
       label: 'Borrar',
-      render: (_value, row) => <GridDeleteIcon onClick={() => deleteChatUser(row.externalId)} />
+      render: (_value, row) => <GridDeleteIcon onClick={() => setUserToDelete(row)} />
     },
   ];
 
@@ -57,10 +62,21 @@ export default function ChatUsers() {
     }
   }, [])
 
-  return <BaseTable
-    columns={columns}
-    rows={chatUsers}
-    searchFields={['email', 'phoneNumber']}
-    searchPlaceholder="Buscar por correo electrónico o número de celular"
-  />
+  return <>
+    <BaseTable
+        columns={columns}
+        rows={chatUsers}
+        searchFields={['email', 'phoneNumber']}
+        searchPlaceholder="Buscar por correo electrónico o número de celular"
+      />
+      <BaseModal
+        open={userToDelete !== null}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={() => deleteChatUser(userToDelete?.externalId ?? "")}
+        title="Eliminar usuario"
+        children={<Typography>¿Está seguro de que desea eliminar al usuario?</Typography>}
+      />
+      <AddChatUserModal />
+    </> 
+
 }
