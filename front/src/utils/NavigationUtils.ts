@@ -5,6 +5,8 @@ export const NavigationRoute = {
   DOCUMENTS: "/documents",
   CHATUSERS: "/chatusers",
   USERS: "/users",
+  DOCUMENTSUCCESS: "/documentsuccess",
+
 } as const;
 
 export type NavigationRoute =

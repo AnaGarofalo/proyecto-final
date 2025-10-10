@@ -9,4 +9,5 @@ import lombok.*;
 @Builder
 public class DocumentDTO {
     private String fileName;
+    private String createdAt;
 }

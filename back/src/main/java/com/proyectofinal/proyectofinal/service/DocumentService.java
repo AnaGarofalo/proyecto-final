@@ -2,6 +2,9 @@ package com.proyectofinal.proyectofinal.service;
 
 import com.proyectofinal.proyectofinal.model.Document;
 import com.proyectofinal.proyectofinal.repository.DocumentRepository;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +25,10 @@ public class DocumentService extends AbstractService<Document, DocumentRepositor
 
         return repository.save(document); // Guardar el documento en la base de datos
     }
+
+    // Método para obtener todos los documentos
+    public List<Document> getAllDocuments() {
+        return repository.findAll();
+    }
+
 }
