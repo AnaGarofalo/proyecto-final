@@ -1,12 +1,10 @@
 export const NavigationRoute = {
   LOGIN: "/",
-  HOMEPAGE: "/homepage",
-  EDITPROMPT: "/editprompt",
+  HOME_PAGE: "/home-page",
+  EDIT_PROMPT: "/edit-prompt",
   DOCUMENTS: "/documents",
-  CHATUSERS: "/chatusers",
+  CHAT_USERS: "/chat-users",
   USERS: "/users",
-  DOCUMENTSUCCESS: "/documentsuccess",
-
 } as const;
 
 export type NavigationRoute =

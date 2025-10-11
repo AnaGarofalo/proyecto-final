@@ -1,34 +1,43 @@
 package com.proyectofinal.proyectofinal.service;
 
+import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.model.Document;
 import com.proyectofinal.proyectofinal.repository.DocumentRepository;
-
-import java.util.List;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public class DocumentService extends AbstractService<Document, DocumentRepository> {
 
-    public DocumentService(DocumentRepository repository) {
+    private final AppUserService appUserService;
+
+    public DocumentService(DocumentRepository repository, AppUserService appUserService) {
         super(repository, Document.class);
+        this.appUserService = appUserService;
     }
 
-    // Método para guardar un archivo en la base de datos
     public Document saveFile(MultipartFile file) {
-        String fileName = file.getOriginalFilename(); // Obtener el nombre del archivo
+        String fileName = file.getOriginalFilename();
+
+        // Obtener el email del usuario autenticado desde el contexto de seguridad
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Buscar el usuario activo por email
+        AppUser user = appUserService.findActiveByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
 
         Document document = Document.builder()
                 .fileName(fileName)
+                .appUser(user)
                 .build();
 
-        return repository.save(document); // Guardar el documento en la base de datos
+        return repository.save(document);
     }
 
-    // Método para obtener todos los documentos
     public List<Document> getAllDocuments() {
         return repository.findAll();
     }
-
 }

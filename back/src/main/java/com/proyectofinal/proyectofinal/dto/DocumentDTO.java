@@ -1,4 +1,4 @@
-package com.proyectofinal.proyectofinal.dto.app_user;
+package com.proyectofinal.proyectofinal.dto;
 
 import lombok.*;
 
@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class DocumentDTO {
+    private String externalId;
     private String fileName;
     private String createdAt;
+    private String uploadedBy;
 }

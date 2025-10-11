@@ -1,22 +1,23 @@
-import axios from "axios";
+import httpClient from "./axios";
+import type { Document } from "../model/Document";
 
-const API_URL = "http://localhost:8080/documents";
+export default class DocumentService {
+  static basePath = "/documents";
 
-export const getDocuments = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
-};
+  static async getDocuments(): Promise<Document[]> {
+    const res = await httpClient.get<Document[]>(this.basePath);
+    return res.data;
+  }
 
-// 🔹 Nuevo: subir archivo
-export const uploadDocument = async (file: File) => {
-  const formData = new FormData();
-  formData.append("file", file);
+  static async uploadDocument(file: File): Promise<Document> {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  const response = await axios.post(`${API_URL}/upload`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  return response.data;
-};
+    const res = await httpClient.post<Document>(
+      `${this.basePath}/upload`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return res.data;
+  }
+}

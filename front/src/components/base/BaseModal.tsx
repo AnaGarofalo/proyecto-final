@@ -1,27 +1,28 @@
-import React from 'react'
+import React from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   IconButton,
-  Typography
-} from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
-import BaseButton from './BaseButton'
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import BaseButton from "./BaseButton";
+import { Colors } from "../../utils/Colors";
 
 type BaseModalProps = {
-  open: boolean
-  title?: string
-  onClose: () => void
-  onConfirm?: () => void
-  onCancel?: () => void
-  confirmText?: string
-  cancelText?: string
-  disableConfirm?: boolean
-  loading?: boolean
-  children: React.ReactNode
-}
+  open: boolean;
+  title?: string;
+  onClose: () => void;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  confirmText?: string;
+  cancelText?: string;
+  disableConfirm?: boolean;
+  loading?: boolean;
+  children: React.ReactNode;
+};
 
 const BaseModal: React.FC<BaseModalProps> = ({
   open,
@@ -29,11 +30,11 @@ const BaseModal: React.FC<BaseModalProps> = ({
   onClose,
   onConfirm,
   onCancel,
-  confirmText = 'Confirmar',
-  cancelText = 'Cancelar',
+  confirmText = "Confirmar",
+  cancelText = "Cancelar",
   disableConfirm,
   loading,
-  children
+  children,
 }) => {
   return (
     <Dialog
@@ -42,18 +43,22 @@ const BaseModal: React.FC<BaseModalProps> = ({
       fullWidth
       maxWidth="sm"
       PaperProps={{
-        sx: { borderRadius: 2, p: 1 }
+        sx: { borderRadius: 2, p: 1 },
       }}
     >
       {title && (
         <DialogTitle sx={{ pr: 6 }}>
-          <Typography variant="h6" fontWeight={700}>
+          <Typography
+            variant="h6"
+            fontWeight={400}
+            color={Colors.QUARTERNARY_DARK_GRAY}
+          >
             {title}
           </Typography>
           <IconButton
             onClick={onClose}
             aria-label="cerrar"
-            sx={{ position: 'absolute', right: 8, top: 8 }}
+            sx={{ position: "absolute", right: 8, top: 8 }}
           >
             <CloseIcon />
           </IconButton>
@@ -82,7 +87,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         </BaseButton>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default BaseModal
+export default BaseModal;

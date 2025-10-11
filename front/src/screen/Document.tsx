@@ -1,91 +1,70 @@
 import React, { useState, useEffect } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
+import CloseIcon from "@mui/icons-material/Close";
 import BaseButton from "../components/base/BaseButton";
 import BaseModal from "../components/base/BaseModal";
 import { Colors } from "../utils/Colors";
-import { getDocuments, uploadDocument } from "../service/DocumentService";
+import DocumentService from "../service/DocumentService";
 import { BaseTable, type Column } from "../components/base/BaseTable";
-import { useNavigate } from "react-router-dom";
-
-interface DocumentItem {
-  id: number;
-  fileName: string;
-  createdAt?: string;
-  usuario?: string;
-}
+import type { Document as DocModel } from "../model/Document";
+import { ToastUtil } from "../utils/ToastUtils";
 
 const Documents: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [documents, setDocuments] = useState<DocumentItem[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [documents, setDocuments] = useState<DocModel[]>([]);
 
-  const navigate = useNavigate();
-
-  //Cargar documentos desde el backend
+  // Cargar documentos al montar el componente
   useEffect(() => {
-    const fetchDocs = async () => {
+    (async () => {
       try {
-        const data = await getDocuments();
-
-        // 🧹 Sanitizar datos por seguridad
-        const safeData = data.map((doc: any) => ({
-          id: doc.id,
-          fileName: String(doc.fileName ?? ""),
-          createdAt: doc.createdAt ?? "",
-          usuario: String(doc.usuario ?? ""),
-        }));
-
-        setDocuments(safeData);
+        const data = await DocumentService.getDocuments();
+        setDocuments(data);
       } catch (error) {
-        console.error("Error al obtener documentos:", error);
+        console.error(error);
+        ToastUtil.error("Error al cargar los documentos");
       }
-    };
-    fetchDocs();
+    })();
   }, []);
 
-  //Subir archivo nuevo
+  // Subida de documentos
   const handleUpload = async () => {
-    if (!selectedFile) {
-      alert("Por favor seleccioná un archivo antes de subirlo.");
+    if (selectedFiles.length === 0) {
+      ToastUtil.warning("Seleccioná al menos un archivo antes de subirlo");
       return;
     }
 
     try {
-      const uploaded = await uploadDocument(selectedFile);
-      setDocuments((prev) => [
-        ...prev,
-        {
-          id: uploaded.id,
-          fileName: uploaded.fileName,
-          createdAt: uploaded.createdAt,
-          usuario: uploaded.usuario ?? "",
-        },
-      ]);
+      const uploadedDocs: DocModel[] = [];
+
+      for (const file of selectedFiles) {
+        const uploaded = await DocumentService.uploadDocument(file);
+        uploadedDocs.push(uploaded);
+      }
+
+      setDocuments((prev) => [...prev, ...uploadedDocs]);
       setOpenModal(false);
-      setSelectedFile(null);
-
-      // 🧭 Redirigir tras éxito
-      navigate("/documentsuccess");
-
-    } catch (err) {
-      console.error("Error al subir documento:", err);
-      alert("Ocurrió un error al subir el archivo.");
+      setSelectedFiles([]);
+      ToastUtil.success("Documentos cargados con éxito");
+    } catch (error) {
+      console.error(error);
+      ToastUtil.error("Ocurrió un error al subir los documentos");
     }
   };
 
-  // 🔹 Definir columnas de la tabla
-  const columns: Column<DocumentItem>[] = [
+  // Columnas de la tabla
+  const columns: Column<DocModel>[] = [
     { field: "fileName", label: "Archivo", flex: 1.5 },
     {
       field: "createdAt",
-      label: "Fecha de carga",
+      label: "Fecha Carga",
       flex: 1,
       render: (value) =>
         value ? new Date(value).toLocaleDateString("es-AR") : "-",
     },
     {
-      field: "usuario",
+      field: "uploadedBy",
       label: "Usuario",
       flex: 1,
       render: (value) => value || "-",
@@ -94,11 +73,8 @@ const Documents: React.FC = () => {
       label: "Borrar",
       align: "center",
       width: 100,
-      render: (_, row) => (
-        <IconButton
-          sx={{ color: Colors.QUARTERNARY_DARK_GRAY }}
-          onClick={() => console.log("🗑️ eliminar", row.id)}
-        >
+      render: () => (
+        <IconButton sx={{ color: Colors.QUARTERNARY_DARK_GRAY }}>
           <DeleteIcon />
         </IconButton>
       ),
@@ -109,38 +85,32 @@ const Documents: React.FC = () => {
     <Box
       sx={{
         flexGrow: 1,
-        pt: 0,
         px: 3,
         backgroundColor: Colors.SEPTENARY_WHITE,
-        minHeight: "calc(100vh - 120px)",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        overflow: "hidden",
       }}
     >
-      {/* Contenedor centrado de tabla */}
-      <Box
+      {/* Barra de búsqueda */}
+      <BaseTable<DocModel>
+        columns={columns}
+        rows={documents}
+        searchFields={["fileName"]}
+        searchPlaceholder="Buscar por nombre de archivo"
+        pageSize={10}
         sx={{
           width: "100%",
           maxWidth: "1200px",
           mx: "auto",
-          overflow: "hidden",
           borderRadius: "8px",
+          overflow: "hidden",
         }}
-      >
-        {/* Barra de búsqueda + encabezado fijos */}
-        <Box sx={{ flexShrink: 0 }}>
-          <BaseTable<DocumentItem>
-            columns={columns}
-            rows={documents}
-            searchFields={["fileName", "usuario"]}
-            searchPlaceholder="Buscar por nombre o usuario..."
-            pageSize={10}
-          />
-        </Box>
-      </Box>
+      />
 
-      {/* Botón fijo para subir documento */}
+      {/* Botón “Cargar documento” */}
       <Box
         sx={{
           position: "fixed",
@@ -165,29 +135,128 @@ const Documents: React.FC = () => {
         </BaseButton>
       </Box>
 
-      {/* Modal de carga */}
+      {/* Modal de carga múltiple */}
       <BaseModal
         open={openModal}
-        title="Cargar documento"
-        onClose={() => setOpenModal(false)}
+        title="Cargar documentos"
+        onClose={() => {
+          setOpenModal(false);
+          setSelectedFiles([]);
+        }}
+        onCancel={() => {
+          setOpenModal(false);
+          setSelectedFiles([]);
+        }}
         onConfirm={handleUpload}
         confirmText="Confirmar"
         cancelText="Cancelar"
       >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Typography variant="body1">
-            Agregue o suelte sus documentos aquí.
+        <Box
+          sx={{
+            border: `1px solid ${Colors.QUINARY_LIGHT_GRAY}`,
+            borderRadius: "8px",
+            backgroundColor: `${Colors.SEPTENARY_WHITE}`,
+            height: 120,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+            textAlign: "center",
+            transition: "background-color 0.2s ease",
+            "&:hover": { backgroundColor: `${Colors.TERTIARY_GRAY}` },
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.backgroundColor = `${Colors.TERTIARY_GRAY}`;
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.backgroundColor = `${Colors.SEPTENARY_WHITE}`;
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.backgroundColor = `${Colors.SEPTENARY_WHITE}`;
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0)
+              setSelectedFiles((prev) => [...prev, ...files]);
+          }}
+          onClick={() => document.getElementById("fileInput")?.click()}
+        >
+          <Typography
+            variant="body1"
+            sx={{
+              color: Colors.QUARTERNARY_DARK_GRAY,
+              fontSize: 16,
+            }}
+          >
+            Agregue o suelte sus documentos aquí
           </Typography>
-          <input
-            type="file"
-            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-          />
-          {selectedFile && (
-            <Typography variant="body2" color="text.secondary">
-              Archivo seleccionado: {selectedFile.name}
-            </Typography>
-          )}
         </Box>
+
+        {/* Input oculto de carga de archivos */}
+        <input
+          id="fileInput"
+          type="file"
+          multiple
+          style={{ display: "none" }}
+          onChange={(e) =>
+            setSelectedFiles((prev) =>
+              e.target.files ? [...prev, ...Array.from(e.target.files)] : prev
+            )
+          }
+        />
+
+        {/* Lista de archivos seleccionados */}
+        {selectedFiles.length > 0 && (
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              flexDirection: "column",
+              gap: 1,
+              maxHeight: 150,
+              overflowY: "auto",
+            }}
+          >
+            {selectedFiles.map((file, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  border: `1px solid ${Colors.TERTIARY_GRAY}`,
+                  borderRadius: "8px",
+                  px: 2,
+                  py: 1,
+                  backgroundColor: `${Colors.SEPTENARY_WHITE}`,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ wordBreak: "break-all" }}
+                >
+                  {file.name}
+                </Typography>
+                <IconButton
+                  size="small"
+                  onClick={() =>
+                    setSelectedFiles((prev) =>
+                      prev.filter((_, i) => i !== index)
+                    )
+                  }
+                  sx={{
+                    color: Colors.SENARY_RED,
+                    "&:hover": { backgroundColor: `${Colors.TERTIARY_GRAY}` },
+                  }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
+        )}
       </BaseModal>
     </Box>
   );

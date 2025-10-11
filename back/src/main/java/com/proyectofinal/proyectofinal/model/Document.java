@@ -13,4 +13,8 @@ public class Document extends AbstractModel {
 
     @Column(nullable = false)
     private String fileName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "app_user_id")
+    private AppUser appUser;
 }
