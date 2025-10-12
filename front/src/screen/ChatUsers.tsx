@@ -14,6 +14,10 @@ export default function ChatUsers() {
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
   const [userToDelete, setUserToDelete] = useState<ChatUser | null>(null);
 
+  function addUser(chatUser: ChatUser) {
+    setChatUsers(currentChatUsers => [chatUser, ...currentChatUsers])
+  }
+
   async function toggleBlocked(isBlocked: boolean, externalId: string) {
     try {
       const response = isBlocked ? await ChatUserService.unblock(externalId) : await ChatUserService.markAsBlocked(externalId);
@@ -76,7 +80,7 @@ export default function ChatUsers() {
         title="Eliminar usuario"
         children={<Typography>¿Está seguro de que desea eliminar al usuario?</Typography>}
       />
-      <AddChatUserModal />
+      <AddChatUserModal existingUsers={chatUsers} addUser={addUser}/>
     </> 
 
 }

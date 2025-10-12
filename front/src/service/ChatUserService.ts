@@ -9,7 +9,7 @@ export default class ChatUserService {
     }
 
     static create(chatUser: CreateChatUser) {
-        return httpClient.post<CreateChatUser>(this.basePath, chatUser)
+        return httpClient.post<ChatUser>(this.basePath, chatUser)
     }
 
     static markAsBlocked(externalId: string) {

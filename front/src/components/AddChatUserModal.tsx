@@ -6,23 +6,35 @@ import BaseInput from "./base/BaseInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { ToastUtil } from "../utils/ToastUtils";
-import { useNavigate } from "react-router-dom";
 import ChatUserService from "../service/ChatUserService";
-import { chatUserSchema, type CreateChatUser } from "../model/ChatUser";
-import { NavigationRoute } from "../utils/NavigationUtils";
+import { chatUserSchema, type ChatUser, type CreateChatUser } from "../model/ChatUser";
 
-export function AddChatUserModal() {
+interface AddChatUserModalProps {
+    existingUsers: ChatUser[];
+    addUser: (chatUser: ChatUser) => void;
+}
+
+export function AddChatUserModal({ existingUsers, addUser }: AddChatUserModalProps) {
     const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<CreateChatUser>({
+    const { register, handleSubmit, getValues, formState: { errors } } = useForm<CreateChatUser>({
         resolver: zodResolver(chatUserSchema),
     })
 
     const createUser: SubmitHandler<CreateChatUser> = async (data: CreateChatUser) => {
         try {
-            await ChatUserService.create(data)
-            navigate(NavigationRoute.CHAT_USERS_SUCCESS)
+            const toCreatePhoneNumber = getValues('phoneNumber');
+            const existingUser = existingUsers.find(chatUser => chatUser.phoneNumber === toCreatePhoneNumber);
+
+            if (existingUser) {
+                ToastUtil.warning("El teléfono ya está en uso");
+                return;
+            }
+            
+            const createdUser = await ChatUserService.create(data);
+            ToastUtil.info("Usuario creado exitosamente");
+            addUser(createdUser.data);
+            setShowModal(false);
         } catch (e) {
             ToastUtil.error("Error al crear usuario");
             console.error(e);
