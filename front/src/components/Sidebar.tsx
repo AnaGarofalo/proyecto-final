@@ -17,17 +17,18 @@ import { Colors } from "../utils/Colors";
 import { NavigationRoute } from "../utils/NavigationUtils";
 
 import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
+import { NavigationRoute } from "../utils/NavigationUtils";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
-    { text: "Inicio", icon: <HomeIcon />, path: "/homepage" },
-    { text: "Editar Prompt", icon: <EditNoteIcon />, path: "/editprompt" },
-    { text: "Documentos", icon: <DescriptionIcon />, path: "/documents" },
-    { text: "Usuarios chat", icon: <WhatsAppIcon />, path: "/chatusers" },
-    { text: "Usuarios", icon: <PeopleIcon />, path: "/users" },
+    { text: "Inicio", icon: <HomeIcon />, path: NavigationRoute.HOMEPAGE },
+    { text: "Editar Prompt", icon: <EditNoteIcon />, path: NavigationRoute.EDIT_PROMPT },
+    { text: "Documentos", icon: <DescriptionIcon />, path: NavigationRoute.DOCUMENTS },
+    { text: "Usuarios chat", icon: <WhatsAppIcon />, path: NavigationRoute.CHAT_USERS },
+    { text: "Usuarios", icon: <PeopleIcon />, path: NavigationRoute.USERS },
   ];
   // Funcion para manejar el cierre de sesion 
 

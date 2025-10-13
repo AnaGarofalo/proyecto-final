@@ -15,9 +15,9 @@ function App() {
       <Route path={NavigationRoute.LOGIN} element={<Login />} />
       <Route element={<Layout />}>
         <Route path={NavigationRoute.HOMEPAGE} element={<HomePage />} />
-        <Route path={NavigationRoute.EDITPROMPT} element={<EditPrompt />} />
+        <Route path={NavigationRoute.EDIT_PROMPT} element={<EditPrompt />} />
         <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
-        <Route path={NavigationRoute.CHATUSERS} element={<ChatUsers />} />
+        <Route path={NavigationRoute.CHAT_USERS} element={<ChatUsers />} />
         <Route path={NavigationRoute.USERS} element={<Users />} />
       </Route>
     </Routes>

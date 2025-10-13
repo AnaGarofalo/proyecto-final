@@ -1,11 +1,12 @@
 package com.proyectofinal.proyectofinal.controller;
 
-import com.proyectofinal.proyectofinal.dto.ChatUserDTO;
-import com.proyectofinal.proyectofinal.dto.app_user.AppUserMinimalDTO;
-import com.proyectofinal.proyectofinal.model.AppUser;
+import com.proyectofinal.proyectofinal.dto.chat_user.ChatUserDTO;
+import com.proyectofinal.proyectofinal.dto.chat_user.CreateChatUserDTO;
 import com.proyectofinal.proyectofinal.model.ChatUser;
 import com.proyectofinal.proyectofinal.service.ChatUserService;
 import com.proyectofinal.proyectofinal.utils.EntityMapper;
+import com.proyectofinal.proyectofinal.validations.ChatUserValidation;
+import com.proyectofinal.proyectofinal.validations.UserValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,14 @@ public class ChatUserController {
                 .map(user -> EntityMapper.map(user, ChatUserDTO.class))
                 .toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping
+    public ResponseEntity<ChatUserDTO> create(@RequestBody CreateChatUserDTO createChatUserDTO) {
+        UserValidation.validateEmail(createChatUserDTO.getEmail());
+        ChatUserValidation.validatePhoneNumber(createChatUserDTO.getPhoneNumber());
+        ChatUser chatUser = chatUserService.createByAdmin(createChatUserDTO.getEmail(), createChatUserDTO.getPhoneNumber());
+        return ResponseEntity.ok(EntityMapper.map(chatUser, ChatUserDTO.class));
     }
 
     @PutMapping("/block/{externalId}")

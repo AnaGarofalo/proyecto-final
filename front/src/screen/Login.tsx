@@ -54,7 +54,7 @@ const Login: React.FC = () => {
           required
         />
 
-        <BaseButton type="submit" disabled={isSubmitting} sx={{ mt: 2 }}>
+        <BaseButton type="submit" disabled={isSubmitting} sx={{ mt: 2 }} fullWidth>
           {isSubmitting ? 'Ingresando...' : 'Ingresar'}
         </BaseButton>
       </form>
