@@ -28,7 +28,7 @@ const Login: React.FC = () => {
         localStorage.setItem("access_token", res.data.token);
       }
       ToastUtil.success("Login exitoso");
-      navigate(NavigationRoute.HOME_PAGE);
+      navigate(NavigationRoute.HOMEPAGE);
     } catch (e) {
       ToastUtil.error("Error al iniciar sesión");
       console.error(e);
@@ -61,8 +61,13 @@ const Login: React.FC = () => {
           required
         />
 
-        <BaseButton type="submit" disabled={isSubmitting} sx={{ mt: 2 }} fullWidth>
-          {isSubmitting ? 'Ingresando...' : 'Ingresar'}
+        <BaseButton
+          type="submit"
+          disabled={isSubmitting}
+          sx={{ mt: 2 }}
+          fullWidth
+        >
+          {isSubmitting ? "Ingresando..." : "Ingresar"}
         </BaseButton>
       </form>
     </Box>

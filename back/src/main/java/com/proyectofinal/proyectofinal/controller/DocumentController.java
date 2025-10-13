@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("documents")
@@ -25,7 +25,7 @@ public class DocumentController {
     // Subida de un archivo a la base de datos
     @PostMapping("/upload")
     public ResponseEntity<DocumentDTO> upload(@RequestParam("file") MultipartFile file) throws Exception {
-        ragService.ingestFiles(new MultipartFile[] {file});
+        ragService.ingestFiles(new MultipartFile[] { file });
         Document document = service.saveFile(file);
 
         DocumentDTO dto = DocumentDTO.builder()
@@ -33,6 +33,16 @@ public class DocumentController {
                 .build();
 
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DocumentDTO>> getAllDocuments() {
+        List<DocumentDTO> documentDTOs = service.getAllDocuments()
+                .stream()
+                .map(DocumentDTO::new)
+                .toList();
+
+        return ResponseEntity.ok(documentDTOs);
     }
 
 }
