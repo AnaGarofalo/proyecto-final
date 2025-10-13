@@ -3,36 +3,36 @@ package com.proyectofinal.proyectofinal.controller;
 import com.proyectofinal.proyectofinal.dto.DocumentDTO;
 import com.proyectofinal.proyectofinal.model.Document;
 import com.proyectofinal.proyectofinal.service.DocumentService;
+import com.proyectofinal.proyectofinal.service.RagService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("documents")
 public class DocumentController {
 
-        private final DocumentService service;
+    private final DocumentService service;
+    private final RagService ragService;
 
-        public DocumentController(DocumentService service) {
-                this.service = service;
-        }
+    public DocumentController(DocumentService service, RagService ragService) {
+        this.service = service;
+        this.ragService = ragService;
+    }
 
-        @PostMapping("/upload")
-        public ResponseEntity<DocumentDTO> upload(@RequestParam("file") MultipartFile file) throws IOException {
-                Document document = service.saveFile(file);
-                return ResponseEntity.ok(new DocumentDTO(document));
-        }
+    // Subida de un archivo a la base de datos
+    @PostMapping("/upload")
+    public ResponseEntity<DocumentDTO> upload(@RequestParam("file") MultipartFile file) throws Exception {
+        ragService.ingestFiles(new MultipartFile[] {file});
+        Document document = service.saveFile(file);
 
-        @GetMapping
-        public ResponseEntity<List<DocumentDTO>> getAllDocuments() {
-                List<DocumentDTO> documentDTOs = service.getAllDocuments()
-                                .stream()
-                                .map(DocumentDTO::new)
-                                .toList();
+        DocumentDTO dto = DocumentDTO.builder()
+                .fileName(document.getFileName())
+                .build();
 
-                return ResponseEntity.ok(documentDTOs);
-        }
+        return ResponseEntity.ok(dto);
+    }
+
 }

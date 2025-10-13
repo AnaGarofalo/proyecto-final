@@ -49,6 +49,19 @@ public class ChatUserService extends AbstractService<ChatUser, ChatUserRepositor
         return repository.save(chatUser);
     }
 
+    public ChatUser createByAdmin(String email, String phone) {
+        Optional<ChatUser> optionalChatUser = findByPhone(phone);
+        if (optionalChatUser.isPresent()) {
+            throw new IllegalArgumentException("Phone already in use");
+        }
+        ChatUser chatUser = ChatUser.builder()
+                .email(email)
+                .phoneNumber(phone)
+                .build();
+
+        return save(chatUser);
+    }
+
     private ChatUser create(String email, String phone) {
         if (!isValidEmail(email)) {
             return null;
@@ -71,6 +84,6 @@ public class ChatUserService extends AbstractService<ChatUser, ChatUserRepositor
     }
 
     public List<ChatUser> getAllActive() {
-        return repository.findByDeletedAtIsNull();
+        return repository.findByDeletedAtIsNullOrderByCreatedAtDesc();
     }
 }

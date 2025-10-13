@@ -14,6 +14,8 @@ import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Colors } from "../utils/Colors";
+import { NavigationRoute } from "../utils/NavigationUtils";
+
 import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
 import { NavigationRoute } from "../utils/NavigationUtils";
 
@@ -22,24 +24,21 @@ const Sidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { text: "Inicio", icon: <HomeIcon />, path: NavigationRoute.HOME_PAGE },
-    {
-      text: "Editar Prompt",
-      icon: <EditNoteIcon />,
-      path: NavigationRoute.EDIT_PROMPT,
-    },
-    {
-      text: "Documentos",
-      icon: <DescriptionIcon />,
-      path: NavigationRoute.DOCUMENTS,
-    },
-    {
-      text: "Usuarios chat",
-      icon: <WhatsAppIcon />,
-      path: NavigationRoute.CHAT_USERS,
-    },
+    { text: "Inicio", icon: <HomeIcon />, path: NavigationRoute.HOMEPAGE },
+    { text: "Editar Prompt", icon: <EditNoteIcon />, path: NavigationRoute.EDIT_PROMPT },
+    { text: "Documentos", icon: <DescriptionIcon />, path: NavigationRoute.DOCUMENTS },
+    { text: "Usuarios chat", icon: <WhatsAppIcon />, path: NavigationRoute.CHAT_USERS },
     { text: "Usuarios", icon: <PeopleIcon />, path: NavigationRoute.USERS },
   ];
+  // Funcion para manejar el cierre de sesion 
+
+  const handleLogout = () => {
+    // Eliminar token del localStorage
+    localStorage.removeItem('access_token');
+
+    // Redirigir al login usando la ruta correcta
+    navigate(NavigationRoute.LOGIN);
+  };
 
   return (
     <Drawer
@@ -82,9 +81,10 @@ const Sidebar = () => {
           ))}
         </List>
 
-        {/* ESTE BOTON NO TIENE LOGICA ALGUNA */}
+        {/* Botón Cerrar sesión */}
         <Box sx={{ mt: "auto", mb: 2 }}>
           <ListItemButton
+            onClick={handleLogout}
             sx={{
               backgroundColor: Colors.QUARTERNARY_DARK_GRAY,
               "&:hover": {
@@ -104,3 +104,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

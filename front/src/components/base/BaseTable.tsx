@@ -39,7 +39,7 @@ export function BaseTable<T>({
   columns,
   rows,
   getRowId,
-  pageSize = 15,
+  pageSize = 10,
   autoHeight = true,
   searchFields = [],
   searchPlaceholder,
@@ -103,7 +103,7 @@ export function BaseTable<T>({
         disableColumnMenu // Desactiva el menú de columnas
         columns={gridColumns}
         getRowId={getRowId ?? ((row) => (row as any).id ?? JSON.stringify(row))}
-        pageSizeOptions={[10, 15, 25, 50]}
+        pageSizeOptions={[5, 10, 25, 50]}
         initialState={{
           pagination: { paginationModel: { pageSize, page: 0 } },
         }}

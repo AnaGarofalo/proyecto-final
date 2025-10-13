@@ -1,6 +1,6 @@
 export const NavigationRoute = {
   LOGIN: "/",
-  HOME_PAGE: "/home-page",
+  HOMEPAGE: "/homepage",
   EDIT_PROMPT: "/edit-prompt",
   DOCUMENTS: "/documents",
   CHAT_USERS: "/chat-users",
