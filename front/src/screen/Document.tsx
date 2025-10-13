@@ -12,6 +12,11 @@ const Documents: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [documents, setDocuments] = useState<DocModel[]>([]);
+  const [isUploading, setIsUploading] =
+    useState(
+      false
+    ); /* Esto bloquea el botón Confirmar cuando se esta subiendo un documento (si no permitia subir varias veces el mismo archivo 
+  si se hacia click muy rapido*/
 
   useEffect(() => {
     (async () => {
@@ -31,75 +36,98 @@ const Documents: React.FC = () => {
       return;
     }
 
+    setIsUploading(true); // Indica que se está subiendo un documento (bloquea el botón de Confirmar)
+
     try {
       const uploadedDocs: DocModel[] = [];
+
       for (const file of selectedFiles) {
         const res = await DocumentService.uploadDocument(file);
         uploadedDocs.push(res.data);
       }
-      setDocuments((prev) => [...prev, ...uploadedDocs]);
+
+      setDocuments((prev) => [...uploadedDocs, ...prev]);
       setOpenModal(false);
       setSelectedFiles([]);
       ToastUtil.success("Documentos cargados con éxito");
     } catch {
       ToastUtil.error("Ocurrió un error al subir los documentos");
+    } finally {
+      setIsUploading(false); // Resetea el estado de subida (desbloquea el botón de Confirmar)
     }
   };
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        px: 3,
-        backgroundColor: Colors.SEPTENARY_WHITE,
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        overflow: "hidden",
-      }}
-    >
-      <DocumentTable documents={documents} />
+    <>
+      {/* Ocultar "Rows per page" */}
+      <style>{`
+        .MuiTablePagination-selectLabel,
+        .MuiTablePagination-select,
+        .MuiTablePagination-selectIcon {
+          display: none !important;
+        }
+      `}</style>
 
       <Box
         sx={{
-          position: "fixed",
-          bottom: 32,
-          right: 64,
-          zIndex: 2,
+          flexGrow: 1,
+          px: 3,
+          backgroundColor: Colors.SEPTENARY_WHITE,
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflow: "hidden",
         }}
       >
-        <BaseButton
-          variantType="filled"
-          onClick={() => setOpenModal(true)}
+        <DocumentTable documents={documents} />
+
+        <Box
           sx={{
-            px: 4,
-            py: 1.5,
-            fontWeight: 600,
-            backgroundColor: Colors.PRIMARY_DARK_BLUE,
-            color: Colors.SEPTENARY_WHITE,
-            "&:hover": { backgroundColor: Colors.HOVER_BLUE },
+            position: "fixed",
+            bottom: 32,
+            right: 64,
+            zIndex: 2,
           }}
         >
-          Cargar documento
-        </BaseButton>
-      </Box>
+          <BaseButton
+            variantType="filled"
+            onClick={() => setOpenModal(true)}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontWeight: 600,
+              backgroundColor: Colors.PRIMARY_DARK_BLUE,
+              color: Colors.SEPTENARY_WHITE,
+              "&:hover": { backgroundColor: Colors.HOVER_BLUE },
+            }}
+          >
+            Cargar documento
+          </BaseButton>
+        </Box>
 
-      <DocumentUploadModal
-        open={openModal}
-        selectedFiles={selectedFiles}
-        setSelectedFiles={setSelectedFiles}
-        onClose={() => {
-          setOpenModal(false);
-          setSelectedFiles([]);
-        }}
-        onCancel={() => {
-          setOpenModal(false);
-          setSelectedFiles([]);
-        }}
-        onConfirm={handleUpload}
-      />
-    </Box>
+        {/* Modal de carga de documentos */}
+        <DocumentUploadModal
+          open={openModal}
+          selectedFiles={selectedFiles}
+          setSelectedFiles={setSelectedFiles}
+          onClose={() => {
+            if (!isUploading) {
+              setOpenModal(false);
+              setSelectedFiles([]);
+            }
+          }}
+          onCancel={() => {
+            if (!isUploading) {
+              setOpenModal(false);
+              setSelectedFiles([]);
+            }
+          }}
+          onConfirm={handleUpload}
+          disabled={isUploading} // Bloquea el botón Confirmar mientras se está subiendo un documento
+        />
+      </Box>
+    </>
   );
 };
 

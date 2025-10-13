@@ -53,7 +53,7 @@ const DocumentTable: React.FC<DocumentTableProps> = ({ documents }) => {
         rows={documents}
         searchFields={["fileName"]}
         searchPlaceholder="Buscar por nombre de archivo"
-        pageSize={10}
+        pageSize={5}
       />
     </Box>
   );

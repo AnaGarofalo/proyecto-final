@@ -28,10 +28,7 @@ public class DocumentController {
         ragService.ingestFiles(new MultipartFile[] { file });
         Document document = service.saveFile(file);
 
-        DocumentDTO dto = DocumentDTO.builder()
-                .fileName(document.getFileName())
-                .build();
-
+        DocumentDTO dto = new DocumentDTO(document);
         return ResponseEntity.ok(dto);
     }
 

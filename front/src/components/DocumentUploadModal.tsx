@@ -11,6 +11,7 @@ interface DocumentUploadModalProps {
   onClose: () => void;
   onCancel: () => void;
   onConfirm: () => void;
+  disabled?: boolean;
 }
 
 const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
@@ -20,6 +21,7 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   onClose,
   onCancel,
   onConfirm,
+  disabled = false,
 }) => {
   return (
     <BaseModal
@@ -28,8 +30,9 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
       onClose={onClose}
       onCancel={onCancel}
       onConfirm={onConfirm}
-      confirmText="Confirmar"
+      confirmText={disabled ? "Cargando..." : "Confirmar"}
       cancelText="Cancelar"
+      disableConfirm={disabled}
     >
       {/* Área drag & drop */}
       <Box
@@ -58,9 +61,12 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           e.preventDefault();
           e.currentTarget.style.backgroundColor = Colors.SEPTENARY_WHITE;
           const files = Array.from(e.dataTransfer.files);
-          if (files.length > 0) setSelectedFiles((prev) => [...prev, ...files]);
+          if (!disabled && files.length > 0)
+            setSelectedFiles((prev) => [...prev, ...files]);
         }}
-        onClick={() => document.getElementById("fileInput")?.click()}
+        onClick={() =>
+          !disabled && document.getElementById("fileInput")?.click()
+        }
       >
         <Typography
           variant="body1"
@@ -69,7 +75,9 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
             fontSize: 16,
           }}
         >
-          Agregue o suelte sus documentos aquí
+          {disabled
+            ? "Subiendo documentos..."
+            : "Agregue o suelte sus documentos aquí"}
         </Typography>
       </Box>
 
@@ -84,6 +92,7 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
             e.target.files ? [...prev, ...Array.from(e.target.files)] : prev
           )
         }
+        disabled={disabled}
       />
 
       {/* Lista de archivos seleccionados */}
@@ -96,6 +105,8 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
             gap: 1,
             maxHeight: 150,
             overflowY: "auto",
+            opacity: disabled ? 0.6 : 1,
+            pointerEvents: disabled ? "none" : "auto",
           }}
         >
           {selectedFiles.map((file, index) => (
