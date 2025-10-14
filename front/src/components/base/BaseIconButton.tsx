@@ -32,7 +32,7 @@ const BaseIconButton: React.FC<BaseIconButtonProps> = ({
         color: Colors.QUARTERNARY_DARK_GRAY,
         '&:hover': {
           backgroundColor: Colors.HOVER_WHITE_TWO,
-          color: '#d32f2f' // Rojo para delete
+          color: Colors.SENARY_RED 
         }
       };
       break;
