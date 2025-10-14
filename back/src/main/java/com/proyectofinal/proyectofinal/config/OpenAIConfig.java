@@ -6,7 +6,7 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiEmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,9 +42,26 @@ public class OpenAIConfig {
     }
 
     @Bean
-    // Este objeto representa el almacenamiento en memoria de los embeddings (ahora
-    // son temporales)
-    public EmbeddingStore<TextSegment> embeddingStore() {
-        return new InMemoryEmbeddingStore<>();
+    // Este objeto representa el almacenamiento de los embeddings
+    public static EmbeddingStore<TextSegment> createEmbeddingStore(
+            @Value("${database.name.rag}") String database,
+            @Value("${database.port}") Integer port,
+            @Value("${database.domain}") String domain,
+            @Value("${spring.datasource.username}") String user,
+            @Value("${spring.datasource.password}") String password
+    ) {
+        return PgVectorEmbeddingStore.builder()
+                .host(domain)
+                .port(port) // puerto que estás usando
+                .database(database)
+                .user(user)
+                .password(password)
+                .table("embeddings")
+                .createTable(true) // Crear tabla embeddings si no existe
+                .dropTableFirst(false) // Eliminar y recrear tabla embeddings
+                .useIndex(true)
+                .indexListSize(100)
+                .dimension(1536) // la dimensión de tu modelo de embeddings
+                .build();
     }
 }

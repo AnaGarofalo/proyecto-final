@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ChatUserRepository extends AbstractRepository<ChatUser>{
     Optional<ChatUser> findByPhoneNumberAndDeletedAtIsNull(String phoneNumber);
 
-    List<ChatUser> findByDeletedAtIsNull();
+    List<ChatUser> findByDeletedAtIsNullOrderByCreatedAtDesc();
 }

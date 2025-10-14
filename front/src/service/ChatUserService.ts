@@ -1,4 +1,4 @@
-import type { ChatUser } from '../model/ChatUser';
+import type { ChatUser, CreateChatUser } from '../model/ChatUser';
 import httpClient from './axios'
 
 export default class ChatUserService {
@@ -6,6 +6,10 @@ export default class ChatUserService {
 
     static getAll() {
         return httpClient.get<ChatUser[]>(this.basePath)
+    }
+
+    static create(chatUser: CreateChatUser) {
+        return httpClient.post<ChatUser>(this.basePath, chatUser)
     }
 
     static markAsBlocked(externalId: string) {

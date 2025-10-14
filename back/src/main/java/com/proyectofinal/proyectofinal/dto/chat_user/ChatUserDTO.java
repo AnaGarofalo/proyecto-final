@@ -1,4 +1,4 @@
-package com.proyectofinal.proyectofinal.dto;
+package com.proyectofinal.proyectofinal.dto.chat_user;
 
 import lombok.*;
 
