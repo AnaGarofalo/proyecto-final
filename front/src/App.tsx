@@ -38,7 +38,7 @@ function App() {
             <HomePage />
           </ProtectedRoute>
         } />
-        <Route path={NavigationRoute.EDITPROMPT} element={
+        <Route path={NavigationRoute.EDIT_PROMPT} element={
           <ProtectedRoute>
             <EditPrompt />
           </ProtectedRoute>
@@ -48,7 +48,7 @@ function App() {
             <Document />
           </ProtectedRoute>
         } />
-        <Route path={NavigationRoute.CHATUSERS} element={
+        <Route path={NavigationRoute.CHAT_USERS} element={
           <ProtectedRoute>
             <ChatUsers />
           </ProtectedRoute>
@@ -58,6 +58,11 @@ function App() {
             <Users />
           </ProtectedRoute>
         } />
+        <Route path={NavigationRoute.HOMEPAGE} element={<HomePage />} />
+        <Route path={NavigationRoute.EDIT_PROMPT} element={<EditPrompt />} />
+        <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
+        <Route path={NavigationRoute.CHAT_USERS} element={<ChatUsers />} />
+        <Route path={NavigationRoute.USERS} element={<Users />} />
       </Route>
     </Routes>
   );

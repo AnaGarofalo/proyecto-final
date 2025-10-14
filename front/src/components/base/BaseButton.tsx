@@ -44,8 +44,7 @@ const BaseButton: React.FC<Props> = ({ variantType = 'filled', icon, children, .
     <Button
       variant={muiVariant}
       startIcon={icon}
-      fullWidth
-      sx={{ borderRadius: 2, fontWeight: 600, textTransform: 'none', ...sx }}
+      sx={{ borderRadius: 1, fontWeight: 600, textTransform: 'none', ...sx }}
       {...rest}
     >
       {children}

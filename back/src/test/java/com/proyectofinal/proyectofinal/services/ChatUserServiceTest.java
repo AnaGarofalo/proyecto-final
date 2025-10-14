@@ -50,6 +50,25 @@ class ChatUserServiceTest extends AbstractTest {
     }
 
     @Test
+    void createByAdmin_success() {
+        String email = "test@test.com";
+        String phone = "11-1111-1112";
+
+        ChatUser result = chatUserService.createByAdmin(email, phone);
+        assertNotNull(result);
+    }
+
+    @Test
+    void createByAdmin_numberUsed() {
+        String email = "test@test.com";
+        String phone = "11-1111-1112";
+
+        chatUserService.createByAdmin(email, phone);
+
+        assertThrows(IllegalArgumentException.class, () -> chatUserService.createByAdmin("test2@test.com", phone));
+    }
+
+    @Test
     void markAsBlocked_userNotFound() {
         assertThrows(PFNotFoundException.class, () -> chatUserService.markAsBlocked("fake-id"));
     }
