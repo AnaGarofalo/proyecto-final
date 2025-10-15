@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  CircularProgress,
-  Paper
+  CircularProgress
 } from '@mui/material';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Colors } from '../utils/Colors';
 import BaseIconButton from '../components/base/BaseIconButton';
@@ -13,39 +11,30 @@ import AppUserService from '../service/AppUserService';
 import type { AppUserMinimalDTO } from '../model/AppUser';
 import '../components/base/base-table.css';
 import { ToastUtil } from '../utils/ToastUtils';
+import { BaseTable, type Column } from '../components/base/BaseTable';
 
 export default function Users() {
   const [users, setUsers] = useState<AppUserMinimalDTO[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Configuración de columnas para DataGrid
-  const columns: GridColDef[] = [
-    {
-      field: 'email',
-      headerName: 'Correo electrónico',
-      flex: 1,
-      renderCell: (params) => (
-        <Box display="flex" alignItems="center" gap={1} className="custom-cell">
-          <Typography>{params.value}</Typography>
-        </Box>
-      ),
-    },
-    {
-      field: 'actions',
-      headerName: 'Borrar',
-      width: 100,
-      sortable: false,
-      renderCell: (params) => (
-        <Box className="custom-cell" justifyContent="center">
-          <BaseIconButton 
-            variant="delete"
-            onClick={() => handleDeleteUser(params.row)}
-            icon={<DeleteIcon />}
-          />
-        </Box>
-      ),
-    },
-  ];
+ 
+  const columns: Column<AppUserMinimalDTO>[] = [
+  { 
+    field: 'email', 
+    label: 'Correo electrónico', 
+    flex: 1 
+  },
+  {
+    label: 'Borrar',
+    width: 100,
+    render: (_, row) => (
+      <BaseIconButton 
+        onClick={() => handleDeleteUser(row)}
+        icon={<DeleteIcon />}
+      />
+    ),
+  },
+];
 
   useEffect(() => {
     loadUsers();
@@ -91,24 +80,12 @@ export default function Users() {
         Usuarios
       </Typography>
 
-      {/* Tabla de usuarios con DataGrid */}
-      <Paper className="base-table-paper">
-        <DataGrid
-          rows={users}
-          columns={columns}
-          loading={loading}
-          getRowId={(row) => row.externalId}
-          className="base-table-data-grid"
-          disableRowSelectionOnClick
-          hideFooterPagination
-          hideFooterSelectedRowCount
-          hideFooter
-          autoHeight
-          localeText={{
-            noRowsLabel: 'No hay usuarios registrados'
-          }}
-        />
-      </Paper>
+      <BaseTable
+  columns={columns}
+  rows={users}
+  searchFields={['email']}
+  searchPlaceholder="Buscar por correo electrónico"
+/>
     </Box>
   );
 }
