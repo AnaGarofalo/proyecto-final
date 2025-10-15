@@ -20,7 +20,7 @@ public class EmailSenderController {
     private final EmailSenderService emailSenderService;
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody EmailDTO dto) {
+    public ResponseEntity<String> sendEmail(@RequestBody EmailDTO dto) {
         emailSenderService.sendEmail(dto.getTo(), dto.getSubject(), dto.getContent());
         return ResponseEntity.ok("Email enviado correctamente!");
     }
