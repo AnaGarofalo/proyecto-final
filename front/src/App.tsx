@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import { NavigationRoute } from "./utils/NavigationUtils";
 import HomePage from "./screen/HomePage";
 import EditPrompt from "./screen/EditPrompt";
+import EditPromptConfirmation from "./screen/EditPromptConfirmation";
 import Document from "./screen/Document";
 import ChatUsers from "./screen/ChatUsers";
 import Users from "./screen/Users";
@@ -16,6 +17,7 @@ function App() {
       <Route element={<Layout />}>
         <Route path={NavigationRoute.HOMEPAGE} element={<HomePage />} />
         <Route path={NavigationRoute.EDIT_PROMPT} element={<EditPrompt />} />
+        <Route path={NavigationRoute.EDIT_PROMPT_CONFIRMATION} element={<EditPromptConfirmation />} />
         <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
         <Route path={NavigationRoute.CHAT_USERS} element={<ChatUsers />} />
         <Route path={NavigationRoute.USERS} element={<Users />} />
