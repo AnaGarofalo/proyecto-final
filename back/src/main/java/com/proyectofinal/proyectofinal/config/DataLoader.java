@@ -25,7 +25,7 @@ public class DataLoader implements CommandLineRunner {
     private void createFirstUser() {
         Optional<AppUser> opExistingUser = appUserService.findActiveByEmail("admin@root.com");
         if (opExistingUser.isEmpty()) {
-            AppUserLoginDTO appUserLoginDTO = AppUserLoginDTO.builder().email("admin@root.com").password("Pass12")
+            AppUserLoginDTO appUserLoginDTO = AppUserLoginDTO.builder().email("admin@root.com").password("Pass123")
                     .build();
             appUserService.create(appUserLoginDTO);
         }
