@@ -12,29 +12,30 @@ import type { AppUserMinimalDTO } from '../model/AppUser';
 import '../components/base/base-table.css';
 import { ToastUtil } from '../utils/ToastUtils';
 import { BaseTable, type Column } from '../components/base/BaseTable';
+import BaseModal from '../components/base/BaseModal';
 
 export default function Users() {
   const [users, setUsers] = useState<AppUserMinimalDTO[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userToDelete, setUserToDelete] = useState<AppUserMinimalDTO | null>(null);
 
- 
   const columns: Column<AppUserMinimalDTO>[] = [
-  { 
-    field: 'email', 
-    label: 'Correo electrónico', 
-    flex: 1 
-  },
-  {
-    label: 'Borrar',
-    width: 100,
-    render: (_, row) => (
-      <BaseIconButton 
-        onClick={() => handleDeleteUser(row)}
-        icon={<DeleteIcon />}
-      />
-    ),
-  },
-];
+    { 
+      field: 'email', 
+      label: 'Correo electrónico', 
+      flex: 1 
+    },
+    {
+      label: 'Borrar',
+      width: 100,
+      render: (_, row) => (
+        <BaseIconButton 
+          onClick={() => setUserToDelete(row)}  
+          icon={<DeleteIcon />}
+        />
+      ),
+    },
+  ];
 
   useEffect(() => {
     loadUsers();
@@ -54,15 +55,14 @@ export default function Users() {
   };
 
   const handleDeleteUser = async (user: AppUserMinimalDTO) => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar al usuario ${user.email}?`)) {
-      try {
-        await AppUserService.delete(user.externalId);
-        await loadUsers();
-        ToastUtil.success('Usuario eliminado exitosamente');
-      } catch (error) {
-        console.error('Error deleting user:', error);
-        ToastUtil.error('Error al eliminar usuario');
-      }
+    try {
+      await AppUserService.delete(user.externalId);
+      await loadUsers();
+      ToastUtil.success('Usuario eliminado exitosamente');
+      setUserToDelete(null);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      ToastUtil.error('Error al eliminar usuario');
     }
   };
 
@@ -81,11 +81,23 @@ export default function Users() {
       </Typography>
 
       <BaseTable
-  columns={columns}
-  rows={users}
-  searchFields={['email']}
-  searchPlaceholder="Buscar por correo electrónico"
-/>
+        columns={columns}
+        rows={users}
+        searchFields={['email']}
+        searchPlaceholder="Buscar por correo electrónico"
+      />
+
+      <BaseModal
+        open={userToDelete !== null}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={() => userToDelete && handleDeleteUser(userToDelete)}
+        title="Eliminar usuario"
+        confirmText="Eliminar"
+      >
+        <Typography>
+          ¿Está seguro de que desea eliminar al usuario {userToDelete?.email}?
+        </Typography>
+      </BaseModal>
     </Box>
   );
 }
