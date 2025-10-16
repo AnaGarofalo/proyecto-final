@@ -14,6 +14,10 @@ public class Ticket extends AbstractModel {
     @JoinColumn(name = "chat_user_id")
     private ChatUser chatUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conversation_id")
+    private Conversation conversation;
+
     @Column(nullable = false)
     private String content;
 }

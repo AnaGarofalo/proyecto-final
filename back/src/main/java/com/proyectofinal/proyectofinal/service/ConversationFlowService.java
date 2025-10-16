@@ -45,7 +45,7 @@ public class ConversationFlowService {
 
         if (!StringUtils.isEmpty(response.getTicketContent())) {
             conversationService.markAsFinished(conversation);
-            ticketService.create(chatUser, messageContent);
+            ticketService.create(chatUser, messageContent, conversation);
             emailSenderService.sendEmail(chatUser.getEmail(), "Soporte - Ticket Nuevo", response.getTicketContent());
         }
 
