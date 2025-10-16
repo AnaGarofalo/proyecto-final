@@ -32,32 +32,12 @@ function App() {
   return (
     <Routes>
       <Route path={NavigationRoute.LOGIN} element={<Login />} />
-      <Route element={<Layout />}>
-        <Route path={NavigationRoute.HOMEPAGE} element={
-          <ProtectedRoute>
-            <HomePage />
-          </ProtectedRoute>
-        } />
-        <Route path={NavigationRoute.EDIT_PROMPT} element={
-          <ProtectedRoute>
-            <EditPrompt />
-          </ProtectedRoute>
-        } />
-        <Route path={NavigationRoute.DOCUMENTS} element={
-          <ProtectedRoute>
-            <Document />
-          </ProtectedRoute>
-        } />
-        <Route path={NavigationRoute.CHAT_USERS} element={
-          <ProtectedRoute>
-            <ChatUsers />
-          </ProtectedRoute>
-        } />
-        <Route path={NavigationRoute.USERS} element={
-          <ProtectedRoute>
-            <Users />
-          </ProtectedRoute>
-        } />
+      <Route element={
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
+      }>
+        {/* Todas estas rutas automáticamente protegidas */}
         <Route path={NavigationRoute.HOMEPAGE} element={<HomePage />} />
         <Route path={NavigationRoute.EDIT_PROMPT} element={<EditPrompt />} />
         <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
