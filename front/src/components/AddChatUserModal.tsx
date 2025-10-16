@@ -17,7 +17,7 @@ interface AddChatUserModalProps {
 export function AddChatUserModal({ existingUsers, addUser }: AddChatUserModalProps) {
     const [showModal, setShowModal] = useState(false);
 
-    const { register, handleSubmit, getValues, formState: { errors } } = useForm<CreateChatUser>({
+    const { register, handleSubmit, getValues, reset, formState: { errors } } = useForm<CreateChatUser>({
         resolver: zodResolver(chatUserSchema),
     })
 
@@ -34,12 +34,18 @@ export function AddChatUserModal({ existingUsers, addUser }: AddChatUserModalPro
             const createdUser = await ChatUserService.create(data);
             ToastUtil.info("Usuario creado exitosamente");
             addUser(createdUser.data);
+            reset(); // Resetea el formulario al confirmar
             setShowModal(false);
         } catch (e) {
             ToastUtil.error("Error al crear usuario");
             console.error(e);
         }
     }
+
+    const handleClose = () => {
+    reset();
+    setShowModal(false);
+  };
 
     return <Box sx={{
         width: "100%",
@@ -51,7 +57,7 @@ export function AddChatUserModal({ existingUsers, addUser }: AddChatUserModalPro
         <BaseButton fullWidth={false} onClick={() => setShowModal(true)}>Agregar Usuario</BaseButton>
         <BaseModal
             open={showModal}
-            onClose={() => setShowModal(false)}
+            onClose={handleClose} // Se usa para borrar el formulario al cerrar
             title="Agregar usuario"
             onConfirm={handleSubmit(createUser)}
             children={
