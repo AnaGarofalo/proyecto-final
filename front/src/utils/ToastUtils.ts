@@ -16,4 +16,8 @@ export class ToastUtil {
   static info(message: string): SnackbarKey {
     return enqueueSnackbar(message, { variant: "info" });
   }
+
+  static tokenExpired(): SnackbarKey {
+    return enqueueSnackbar('Token expirado', { variant: "warning" });
+  }
 }

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NavigationRoute } from '../utils/NavigationUtils';
 import { isTokenExpired } from '../service/axios';
+import { ToastUtil } from '../utils/ToastUtils';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     
     // Verificación de expiración: si el token está expirado
     if (isTokenExpired(token)) {
-      console.warn('Token expirado - Eliminando token y redirigiendo al login');
+      ToastUtil.tokenExpired();
       localStorage.removeItem('access_token');
       navigate(NavigationRoute.LOGIN);
       return;
