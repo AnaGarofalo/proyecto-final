@@ -3,6 +3,7 @@ import { Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import BaseModal from "./base/BaseModal";
 import { Colors } from "../utils/Colors";
+import { ToastUtil } from "../utils/ToastUtils";
 
 interface DocumentUploadModalProps {
   open: boolean;
@@ -60,9 +61,17 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         onDrop={(e) => {
           e.preventDefault();
           e.currentTarget.style.backgroundColor = Colors.SEPTENARY_WHITE;
-          const files = Array.from(e.dataTransfer.files);
-          if (!disabled && files.length > 0)
+
+          const allowedTypes = [".pdf", ".txt", ".docx"]; // ACA DEBEMOS DEFINIR LOS TIPOS DE ARCHIVO ACEPTADOS
+          const files = Array.from(e.dataTransfer.files).filter((file) =>
+            allowedTypes.some((ext) => file.name.toLowerCase().endsWith(ext))
+          );
+
+          if (files.length > 0) {
             setSelectedFiles((prev) => [...prev, ...files]);
+          } else {
+            ToastUtil.warning("Solo se permiten archivos PDF, TXT o DOCX");
+          }
         }}
         onClick={() =>
           !disabled && document.getElementById("fileInput")?.click()
@@ -86,6 +95,7 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         id="fileInput"
         type="file"
         multiple
+        accept=".pdf,.txt,.docx" // ACA DEBEMOS DEFINIR LOS TIPOS DE ARCHIVO ACEPTADOS
         style={{ display: "none" }}
         onChange={(e) =>
           setSelectedFiles((prev) =>
