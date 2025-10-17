@@ -58,10 +58,17 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         return repository.save(modelToCreate);
     }
 
-    public AppUser updateEmailByExternalId(String externalId, String newEmail) {
+    public AppUser updateUserByExternalId(String externalId, String newEmail, String newPassword) {
         AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
                 .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
+        
         user.setEmail(newEmail);
+        
+        if (newPassword != null && !newPassword.isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encodedPassword);
+        }
+        
         return repository.save(user);
     }
 
