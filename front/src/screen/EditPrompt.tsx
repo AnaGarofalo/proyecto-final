@@ -1,52 +1,52 @@
-import { useEffect, useState, type ChangeEvent } from 'react'
+import { useEffect } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { systemPromptSchema, type SystemPromptType } from '../model/SystemPrompt'
 import { Box, Typography, TextField } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { NavigationRoute } from '../utils/NavigationUtils'
+import { useForm } from 'react-hook-form'
 import BaseButton from '../components/base/BaseButton'
 import BaseInput from '../components/base/BaseInput'
 import { Colors } from '../utils/Colors'
 import SystemPromptService from '../service/SystemPromptService'
 import { ToastUtil } from '../utils/ToastUtils'
 
+type FormValues = {
+  prompt: string
+  ticketEmail: string
+}
+
 export default function EditPrompt() {
-  const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [prompt, setPrompt] = useState('')
-  const [ticketEmail, setTicketEmail] = useState('')
-  const navigate = useNavigate()
+  const { register, handleSubmit, reset, formState } = useForm<FormValues>({
+    resolver: zodResolver(systemPromptSchema),
+    defaultValues: { prompt: '', ticketEmail: '' },
+  })
 
-  useEffect(() => {
-    setLoading(true)
-    setTimeout(() => {
-      setPrompt(
-        'Debes brindar información referida al área de Facilities basado en la información cargada etc etc etc...'
-      )
-      setTicketEmail('helpdesk@nestle.com')
-      setLoading(false)
-    }, 250)
-  }, [])
-
-  const onSave = async () => {
-    setSaving(true)
+  const onSave = async (data: FormValues) => {
     try {
-      const res = await SystemPromptService.patch({ prompt, ticketEmail })
-      const ok = (res && (res.status === 200 || res.status === undefined))
+      const res = await SystemPromptService.patch({ prompt: data.prompt, ticketEmail: data.ticketEmail })
       if (res?.data) {
-        setPrompt(res.data.prompt)
-        setTicketEmail(res.data.ticketEmail)
+        reset({ prompt: res.data.prompt, ticketEmail: res.data.ticketEmail })
       }
-      if (ok) {
-        ToastUtil.success('Prompt actualizado correctamente')
-        navigate(NavigationRoute.EDIT_PROMPT_CONFIRMATION)
-        return
-      }
+      ToastUtil.success('Prompt actualizado correctamente')
     } catch (e: unknown) {
       const msg = (e as { message?: string })?.message || 'Error al actualizar'
       ToastUtil.error(msg)
-    } finally {
-      setSaving(false)
     }
   }
+
+  useEffect(() => {
+    let mounted = true
+    SystemPromptService.get()
+      .then((res) => {
+        const data = res.data as SystemPromptType
+        if (mounted) reset({ prompt: data.prompt ?? '', ticketEmail: data.ticketEmail ?? '' })
+      })
+      .catch((err) => {
+        ToastUtil.error(err?.message || 'Error cargando prompt')
+      })
+    return () => {
+      mounted = false
+    }
+  }, [reset])
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -68,12 +68,11 @@ export default function EditPrompt() {
           multiline
           minRows={8}
           fullWidth
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          {...register('prompt')}
           variant="standard"
           InputProps={{
             disableUnderline: true,
-            style: { color: '#00FF41', fontFamily: 'monospace', fontSize: 14 },
+            style: { color: Colors.TERMINAL_TEXT_GREEN, fontFamily: 'monospace', fontSize: 14 },
           }}
         />
       </Box>
@@ -83,17 +82,14 @@ export default function EditPrompt() {
       </Typography>
 
       <Box sx={{ maxWidth: 600, mb: 3 }}>
-        <BaseInput
-          label="Email de ticket"
-          type="email"
-          value={ticketEmail}
-          onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setTicketEmail(e.target.value)}
-        />
+        <BaseInput label="Email de ticket" type="email" {...register('ticketEmail')} />
       </Box>
 
-      <BaseButton variantType="filled" onClick={onSave} disabled={saving || loading}>
-        {saving ? 'Guardando...' : 'Confirmar cambios'}
-      </BaseButton>
+      <form onSubmit={handleSubmit(onSave)}>
+        <BaseButton type="submit" variantType="filled">
+          {formState.isSubmitting ? 'Guardando...' : 'Confirmar cambios'}
+        </BaseButton>
+      </form>
     </Box>
   )
 }
