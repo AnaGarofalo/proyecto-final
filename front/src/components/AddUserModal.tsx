@@ -15,7 +15,11 @@ import { z } from "zod";
 
 const createUserSchema = z.object({
   email: z.string().email("Email inválido"),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  password: z.string()
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d).{6,}$/,
+      "La contraseña debe tener al menos 6 caracteres, una Mayúscula y un número"
+    ),
 });
 
 type CreateUserFormData = z.infer<typeof createUserSchema>;

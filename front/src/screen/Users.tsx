@@ -80,8 +80,10 @@ export default function Users() {
     if (!userToEdit) return;
 
     try {
-      await AppUserService.update(userToEdit.externalId, { email, password });
-      await loadUsers();
+      const updatedUser = await AppUserService.update(userToEdit.externalId, { email, password });
+      setUsers(users.map(user => 
+        user.externalId === userToEdit.externalId ? updatedUser.data : user
+      ));
       ToastUtil.success('Usuario actualizado exitosamente');
       setUserToEdit(null);
     } catch (error) {
