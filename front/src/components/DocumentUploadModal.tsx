@@ -15,7 +15,7 @@ interface DocumentUploadModalProps {
   disabled?: boolean;
 }
 
-const MAX_FILE_SIZE_MB = 32; // ESTA CONSTANTE DEBE COINCIDIR CON APPLICATION.PROPERTIES
+const MAX_FILE_SIZE_MB = 64; // ESTA CONSTANTE DEBE COINCIDIR CON APPLICATION.PROPERTIES
 const TYPE_FILES = [".pdf", ".txt", ".docx"]; // TIPOS DE ARCHIVOS PERMITIDOS
 
 const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
