@@ -3,6 +3,7 @@ import { Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import BaseModal from "./base/BaseModal";
 import { Colors } from "../utils/Colors";
+import { ToastUtil } from "../utils/ToastUtils";
 
 interface DocumentUploadModalProps {
   open: boolean;
@@ -14,6 +15,9 @@ interface DocumentUploadModalProps {
   disabled?: boolean;
 }
 
+const MAX_FILE_SIZE_MB = 64; // ESTA CONSTANTE DEBE COINCIDIR CON APPLICATION.PROPERTIES
+const TYPE_FILES = [".pdf", ".txt", ".docx"]; // TIPOS DE ARCHIVOS PERMITIDOS
+
 const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   open,
   selectedFiles,
@@ -23,6 +27,35 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
   onConfirm,
   disabled = false,
 }) => {
+  // FUNCIÓN PARA VALIDAR LOS ARCHIVOS SELECCIONADOS
+  const validateFiles = (files: File[]) => {
+    const allowedTypes = TYPE_FILES;
+    const validFiles: File[] = [];
+
+    for (const file of files) {
+      const extensionOk = allowedTypes.some((ext) =>
+        file.name.toLowerCase().endsWith(ext)
+      );
+      const sizeOk = file.size <= MAX_FILE_SIZE_MB * 1024 * 1024;
+
+      if (!extensionOk) {
+        ToastUtil.warning(`"${file.name}" no es un tipo permitido`);
+      } else if (!sizeOk) {
+        ToastUtil.error(
+          `El archivo "${file.name} (${(file.size / 1024 / 1024).toFixed(
+            2
+          )} MB)"  supera el máximo permitido de ${MAX_FILE_SIZE_MB} MB`
+        );
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setSelectedFiles((prev) => [...prev, ...validFiles]);
+    }
+  };
+
   return (
     <BaseModal
       open={open}
@@ -61,8 +94,7 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           e.preventDefault();
           e.currentTarget.style.backgroundColor = Colors.SEPTENARY_WHITE;
           const files = Array.from(e.dataTransfer.files);
-          if (!disabled && files.length > 0)
-            setSelectedFiles((prev) => [...prev, ...files]);
+          validateFiles(files);
         }}
         onClick={() =>
           !disabled && document.getElementById("fileInput")?.click()
@@ -73,11 +105,29 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
           sx={{
             color: Colors.QUARTERNARY_DARK_GRAY,
             fontSize: 16,
+            textAlign: "center",
           }}
         >
-          {disabled
-            ? "Subiendo documentos..."
-            : "Agregue o suelte sus documentos aquí"}
+          {disabled ? (
+            "Subiendo documentos..."
+          ) : (
+            <>
+              Agregue o suelte sus documentos aquí
+              <br />
+              <Typography
+                component="span"
+                sx={{
+                  color: Colors.QUARTERNARY_DARK_GRAY,
+                  fontWeight: 500,
+                  fontSize: 12,
+                }}
+              >
+                Formatos permitidos: {TYPE_FILES.join(", ")}
+                <br />
+                Tamaño máximo por carga: {MAX_FILE_SIZE_MB} MB
+              </Typography>
+            </>
+          )}
         </Typography>
       </Box>
 
@@ -86,12 +136,14 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
         id="fileInput"
         type="file"
         multiple
+        accept={TYPE_FILES.join(",")}
         style={{ display: "none" }}
-        onChange={(e) =>
-          setSelectedFiles((prev) =>
-            e.target.files ? [...prev, ...Array.from(e.target.files)] : prev
-          )
-        }
+        onChange={(e) => {
+          if (e.target.files) {
+            validateFiles(Array.from(e.target.files));
+            e.target.value = ""; // LIMPIAR EL VALOR PARA PERMITIR RESELECCIÓN DEL MISMO ARCHIVO
+          }
+        }}
         disabled={disabled}
       />
 
@@ -128,7 +180,7 @@ const DocumentUploadModal: React.FC<DocumentUploadModalProps> = ({
                 color="text.secondary"
                 sx={{ wordBreak: "break-all" }}
               >
-                {file.name}
+                {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
               </Typography>
               <IconButton
                 size="small"

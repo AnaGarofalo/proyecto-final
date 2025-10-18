@@ -9,6 +9,7 @@ import com.proyectofinal.proyectofinal.types.PremadeResponse;
 import com.proyectofinal.proyectofinal.utils.ConversationJSONBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,6 +21,12 @@ public class ConversationFlowService {
     private final ConversationService conversationService;
     private final MessageService messageService;
     private final RagService ragService;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
+
+    @Autowired
+    private TicketService ticketService;
 
     public String getResponseForMessage(String messageContent, String phoneNumber) {
         ChatUser chatUser;
@@ -38,6 +45,8 @@ public class ConversationFlowService {
 
         if (!StringUtils.isEmpty(response.getTicketContent())) {
             conversationService.markAsFinished(conversation);
+            ticketService.create(chatUser, messageContent, conversation);
+            emailSenderService.sendEmail(chatUser.getEmail(), "Soporte - Ticket Nuevo", response.getTicketContent());
         }
 
         return response.getUserResponse();
