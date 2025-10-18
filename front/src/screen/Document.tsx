@@ -39,14 +39,9 @@ const Documents: React.FC = () => {
     setIsUploading(true); // Indica que se está subiendo un documento (bloquea el botón de Confirmar)
 
     try {
-      const uploadedDocs: DocModel[] = [];
+      const uploadedDocs = await DocumentService.uploadDocuments(selectedFiles);
 
-      for (const file of selectedFiles) {
-        const res = await DocumentService.uploadDocument(file);
-        uploadedDocs.push(res.data);
-      }
-
-      setDocuments((prev) => [...uploadedDocs, ...prev]);
+      setDocuments((prev) => [...uploadedDocs.data, ...prev]);
       setOpenModal(false);
       setSelectedFiles([]);
       ToastUtil.success("Documentos cargados con éxito");
@@ -56,6 +51,9 @@ const Documents: React.FC = () => {
       setIsUploading(false); // Resetea el estado de subida (desbloquea el botón de Confirmar)
     }
   };
+
+  const afterDelete = (deleted: DocModel) => setDocuments(current => current.filter(doc => doc.externalId !== deleted.externalId));
+
 
   return (
     <>
@@ -80,7 +78,7 @@ const Documents: React.FC = () => {
           overflow: "hidden",
         }}
       >
-        <DocumentTable documents={documents} />
+        <DocumentTable documents={documents} afterDelete={afterDelete} />
 
         <Box
           sx={{
