@@ -22,14 +22,14 @@ public class DocumentController {
         this.ragService = ragService;
     }
 
-    // Subida de un archivo a la base de datos
+    // Subida de un archivos a la base de datos
     @PostMapping("/upload")
-    public ResponseEntity<DocumentDTO> upload(@RequestParam("file") MultipartFile file) throws Exception {
-        ragService.ingestFiles(new MultipartFile[] { file });
-        Document document = service.saveFile(file);
-
-        DocumentDTO dto = new DocumentDTO(document);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<List<DocumentDTO>> upload(@RequestParam("files") MultipartFile[] files) throws Exception {
+        List<Document> documents = ragService.ingestFiles(files);
+        List<DocumentDTO> dtos = documents.stream()
+                .map(DocumentDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping
@@ -40,6 +40,13 @@ public class DocumentController {
                 .toList();
 
         return ResponseEntity.ok(documentDTOs);
+    }
+
+    @DeleteMapping("/{externalId}")
+    public ResponseEntity<DocumentDTO> delete(@PathVariable("externalId") String externalId) {
+        Document document = ragService.removeFile(externalId);
+
+        return ResponseEntity.ok(new DocumentDTO(document));
     }
 
 }

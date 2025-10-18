@@ -9,8 +9,12 @@ import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class OpenAIConfig {
@@ -63,5 +67,23 @@ public class OpenAIConfig {
                 .indexListSize(100)
                 .dimension(1536) // la dimensión de tu modelo de embeddings
                 .build();
+    }
+
+    @Bean
+    // Este objeto representa la conexión a la bdd de rag
+    public JdbcTemplate embeddingJdbcTemplate(
+            @Value("${database.domain}") String domain,
+            @Value("${database.port}") Integer port,
+            @Value("${database.name.rag}") String database,
+            @Value("${spring.datasource.username}") String user,
+            @Value("${spring.datasource.password}") String password
+    ) {
+        String url = String.format("jdbc:postgresql://%s:%d/%s", domain, port, database);
+        DataSource dataSource = DataSourceBuilder.create()
+                .url(url)
+                .username(user)
+                .password(password)
+                .build();
+        return new JdbcTemplate(dataSource);
     }
 }

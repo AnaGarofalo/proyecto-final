@@ -16,6 +16,7 @@ import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,24 +25,27 @@ import java.util.stream.Collectors;
 @Service
 public class OpenAiService {
 
-    private static final String META_FILENAME_KEY = "filename";
+    private static final String DOCUMENT_ID = "document_id";
 
     private final ChatLanguageModel chatModel; // Modelo de chat (GPT-4o-mini)
     private final EmbeddingModel embeddingModel; // text-embedding-3-small
-    private final EmbeddingStore<TextSegment> store; // Almacén en memoria
+    private final EmbeddingStore<TextSegment> store; // Embedding store en la base de datos de rag
+    private final JdbcTemplate embeddingJdbcTemplate; // Conexión con la base de datos de rag
+
 
     public OpenAiService(ChatLanguageModel chatModel,
-            EmbeddingModel embeddingModel,
-            EmbeddingStore<TextSegment> store) {
+                         EmbeddingModel embeddingModel,
+                         EmbeddingStore<TextSegment> store, JdbcTemplate embeddingJdbcTemplate) {
         this.chatModel = chatModel;
         this.embeddingModel = embeddingModel;
         this.store = store;
+        this.embeddingJdbcTemplate = embeddingJdbcTemplate;
     }
 
     // Indexa el texto, genera chunks, obtiene embeddings y los guarda
-    public void indexFile(String text, String filename) {
+    public void indexFile(String text, String documentExternalId) {
         DocumentSplitter splitter = DocumentSplitters.recursive(800, 200);
-        Metadata meta = Metadata.from(META_FILENAME_KEY, filename);
+        Metadata meta = Metadata.from(DOCUMENT_ID, documentExternalId);
         Document doc = Document.from(text, meta);
 
         List<TextSegment> segments = splitter.split(doc);
@@ -51,6 +55,12 @@ public class OpenAiService {
                 store.add(embeddings.get(i), segments.get(i));
             }
         }
+    }
+
+    // Remueve los embeddings nacidos de un documento en particular
+    public void removeFile(String documentExternalId) {
+        String sql = "DELETE FROM embeddings WHERE metadata ->> 'document_id' = ?";
+        embeddingJdbcTemplate.update(sql, documentExternalId);
     }
 
     // Genera las respuestas usando el contexto más relevante
@@ -85,7 +95,7 @@ public class OpenAiService {
         return result.matches().stream()
                 .map(m -> {
                     Metadata meta = m.embedded().metadata();
-                    String name = meta != null ? meta.getString(META_FILENAME_KEY) : null;
+                    String name = meta != null ? meta.getString(DOCUMENT_ID) : null;
                     return name != null ? name : "desconocido";
                 })
                 .distinct()
