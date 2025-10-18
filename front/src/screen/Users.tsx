@@ -5,7 +5,6 @@ import {
   CircularProgress
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Colors } from '../utils/Colors';
 import BaseIconButton from '../components/base/BaseIconButton';
 import AppUserService from '../service/AppUserService';
 import type { AppUserMinimalDTO } from '../model/AppUser';
@@ -76,9 +75,7 @@ export default function Users() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight={700} mb={3} color={Colors.PRIMARY_DARK_BLUE}>
-        Usuarios
-      </Typography>
+      
 
       <BaseTable
         columns={columns}
