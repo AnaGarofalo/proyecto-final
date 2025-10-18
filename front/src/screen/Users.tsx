@@ -102,9 +102,7 @@ export default function Users() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight={700} mb={3} color={Colors.PRIMARY_DARK_BLUE}>
-        Usuarios
-      </Typography>
+      
 
       <AddUserModal
         onUserAdded={(user) => {

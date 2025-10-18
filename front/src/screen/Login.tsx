@@ -10,6 +10,7 @@ import { ToastUtil } from "../utils/ToastUtils";
 import { useNavigate } from "react-router-dom";
 import { NavigationRoute } from "../utils/NavigationUtils";
 import { Box } from "@mui/material";
+import nestleLogo from "../assets/logo/nestleLogo.png";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -41,6 +42,14 @@ const Login: React.FC = () => {
         onSubmit={handleSubmit(login)}
         style={{ maxWidth: 400, margin: "auto", padding: 20 }}
       >
+        {/* Solo agregar el logo aquí */}
+        <Box sx={{ textAlign: "center", mb: 2 }}>
+          <img
+            src={nestleLogo}
+            alt="Nestlé"
+            style={{ height: "80px", objectFit: "contain" }}
+          />
+        </Box>
         <BaseInput
           label="Email"
           type="email"
