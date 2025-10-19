@@ -18,6 +18,6 @@ public class Ticket extends AbstractModel {
     @JoinColumn(name = "conversation_id")
     private Conversation conversation;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 }
