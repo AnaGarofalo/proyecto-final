@@ -1,13 +1,14 @@
 import httpClient from './axios'
+import type { SystemPrompt } from '../model/SystemPrompt'
 
 export default class SystemPromptService {
   static basePath = '/system-prompt'
 
   static get() {
-    return httpClient.get<{ prompt: string; ticketEmail: string }>(this.basePath)
+    return httpClient.get<SystemPrompt>(this.basePath)
   }
 
-  static patch(data: { prompt?: string; ticketEmail?: string }) {
-    return httpClient.patch<{ prompt: string; ticketEmail: string }>(this.basePath, data)
+  static patch(data: SystemPrompt) {
+    return httpClient.patch<SystemPrompt>(this.basePath, data)
   }
 }
