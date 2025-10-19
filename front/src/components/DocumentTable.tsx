@@ -56,7 +56,6 @@ const DocumentTable: React.FC<DocumentTableProps> = ({ documents, afterDelete })
         rows={documents}
         searchFields={["fileName"]}
         searchPlaceholder="Buscar por nombre de archivo"
-        pageSize={5}
       />
       {documentToDelete && (
         <DocumentRemovalModal
