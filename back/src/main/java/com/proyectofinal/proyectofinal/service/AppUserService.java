@@ -4,6 +4,7 @@ import com.proyectofinal.proyectofinal.dto.app_user.AppUserLoginDTO;
 import com.proyectofinal.proyectofinal.exception.PFNotFoundException;
 import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.repository.AppUserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,15 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     public AppUser getByEmail(String email) {
         return findActiveByEmail(email)
                 .orElseThrow(() -> new PFNotFoundException(email, "email", AppUser.class));
+    }
+
+    public AppUser getFromToken() {
+        // Obtener el email del usuario autenticado desde el contexto de seguridad
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Buscar el usuario activo por email
+        return findActiveByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
     }
 
     // Método para validar login (email + password)

@@ -8,12 +8,18 @@ export default class DocumentService {
     return httpClient.get<Document[]>(this.basePath);
   }
 
-  static uploadDocument(file: File) {
+  static uploadDocuments(files: File[]) {
     const formData = new FormData();
-    formData.append("file", file);
+    files.forEach(file => {
+      formData.append("files", file);
+    });
 
-    return httpClient.post<Document>(`${this.basePath}/upload`, formData, {
+    return httpClient.post<Document[]>(`${this.basePath}/upload`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+  }
+
+    static deleteDocument(externalId: string) {
+    return httpClient.delete<Document>(`${this.basePath}/${externalId}`);
   }
 }

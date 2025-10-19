@@ -1,45 +1,82 @@
 package com.proyectofinal.proyectofinal.service;
 
 import com.proyectofinal.proyectofinal.dto.IAResponseDTO;
-import com.proyectofinal.proyectofinal.dto.app_user.IngestResponseDTO;
+import com.proyectofinal.proyectofinal.model.AppUser;
+import com.proyectofinal.proyectofinal.model.Document;
 import com.proyectofinal.proyectofinal.utils.IAResponseParser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class RagService {
 
     private final FileTextExtractor fileTextExtractor; // Extrae texto de archivos
     private final OpenAiService openAiService;
     private final SystemPromptService systemPromptService;
+    private final DocumentService documentService;
+    private final AppUserService appUserService;
 
     public RagService(FileTextExtractor fileTextExtractor,
                       OpenAiService openAiService,
-                      SystemPromptService systemPromptService) {
+                      SystemPromptService systemPromptService, DocumentService documentService, AppUserService appUserService) {
         this.fileTextExtractor = fileTextExtractor;
         this.openAiService = openAiService;
         this.systemPromptService = systemPromptService;
+        this.documentService = documentService;
+        this.appUserService = appUserService;
     }
 
     // Aca se procesan los archivos subidos
-    public IngestResponseDTO ingestFiles(MultipartFile[] files) throws Exception {
-        int processed = 0;
-
+    public List<Document> ingestFiles(MultipartFile[] files) throws Exception {
+        log.info("Ingesting {} files", files.length);
+        List<Document> documents = new ArrayList<>();
+        AppUser appUser = appUserService.getFromToken();
         for (MultipartFile f : files) {
-            if (f.isEmpty())
+
+            if (f.isEmpty()){
+                log.warn("File empty");
                 continue;
+            }
 
             String text = fileTextExtractor.extract(f.getBytes(), f.getOriginalFilename());
-            if (text == null || text.isBlank())
-                continue; 
+            if (text == null || text.isBlank()){
+                log.warn("File empty: {}", f.getOriginalFilename());
+                continue;
+            }
 
-            openAiService.indexFile(text, f.getOriginalFilename());
-            processed++;
+            Document created = documentService.saveFile(f, appUser);
+            log.info("Creating document for {}", f.getOriginalFilename());
+
+            try {
+                log.info("Indexing {}", f.getOriginalFilename());
+
+                openAiService.indexFile(text, created.getExternalId());
+                documents.add(created);
+            } catch (Exception e) {
+                // If the file embeddings weren't saved, we don't want the document on our database
+                log.error("Failed to index {}", f.getOriginalFilename());
+                documentService.markAsDeleted(created.getExternalId());
+
+                throw new RuntimeException(e);
+            }
         }
+        return documents;
+    }
 
-        return new IngestResponseDTO(processed);
+    @Transactional
+    public Document removeFile(String externalId) {
+        log.info("Removing document with external id {}", externalId);
+        Document document = documentService.markAsDeleted(externalId);
+
+        log.info("Removing embeddings for document with external id {}", externalId);
+        openAiService.removeFile(externalId);
+        return document;
     }
 
     // Delega la pregunta al servicio de OpenAI
