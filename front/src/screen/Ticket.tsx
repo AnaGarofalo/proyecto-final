@@ -23,21 +23,11 @@ const Tickets: React.FC = () => {
 
   return (
     <>
-      {/* Ocultar "Rows per page" */}
-      <style>{`
-        .MuiTablePagination-selectLabel,
-        .MuiTablePagination-select,
-        .MuiTablePagination-selectIcon {
-          display: none !important;
-        }
-      `}</style>
-
       <Box
         sx={{
           flexGrow: 1,
           px: 3,
           backgroundColor: Colors.SEPTENARY_WHITE,
-          height: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

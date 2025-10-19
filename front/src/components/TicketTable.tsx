@@ -61,7 +61,7 @@ const TicketTable: React.FC<TicketTableProps> = ({ tickets }) => {
         rows={tickets}
         searchFields={["uploadedBy", "content"]}
         searchPlaceholder="Buscar por usuario o contenido"
-        pageSize={5}
+        pageSize={10}
       />
     </Box>
   );
