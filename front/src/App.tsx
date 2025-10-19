@@ -10,6 +10,7 @@ import EditPrompt from "./screen/EditPrompt";
 import Document from "./screen/Document";
 import ChatUsers from "./screen/ChatUsers";
 import Users from "./screen/Users";
+import Ticket from "./screen/Ticket";
 
 function App() {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ function App() {
         <Route path={NavigationRoute.DOCUMENTS} element={<Document />} />
         <Route path={NavigationRoute.CHAT_USERS} element={<ChatUsers />} />
         <Route path={NavigationRoute.USERS} element={<Users />} />
+        <Route path={NavigationRoute.TICKET} element={<Ticket />} />
       </Route>
     </Routes>
   );

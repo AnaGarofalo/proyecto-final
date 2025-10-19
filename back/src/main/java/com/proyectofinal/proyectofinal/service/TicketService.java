@@ -1,5 +1,7 @@
 package com.proyectofinal.proyectofinal.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,4 +24,9 @@ public class TicketService extends AbstractService<Ticket, TicketRepository> {
                 .build();
         repository.save(ticket);
     }
+
+    // AGREGO ESTO PARA LISTAR LOS TICKETS (LUIS)
+    public List<Ticket> getAllTickets() {
+    return repository.findAll();
+}
 }
