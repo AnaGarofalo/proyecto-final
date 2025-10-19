@@ -44,7 +44,7 @@ public class RagService {
 
     // Delega la pregunta al servicio de OpenAI
     public IAResponseDTO ask(String question) {
-        String systemPrompt = systemPromptService.getBasePrompt();
+        String systemPrompt = systemPromptService.getLatest().getPrompt();
         String response = openAiService.answerFromContext(question, 5, systemPrompt);
         return IAResponseParser.parse(response);
     }
