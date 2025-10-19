@@ -111,12 +111,12 @@
 			<artifactId>langchain4j-open-ai</artifactId>
 			<version>0.36.0</version>
 		</dependency>
-        <!-- Libreria LangChain4j para vector store -->
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-pgvector</artifactId>
-            <version>0.36.0</version>
-        </dependency>
+		<!-- Libreria LangChain4j para vector store -->
+		<dependency>
+			<groupId>dev.langchain4j</groupId>
+			<artifactId>langchain4j-pgvector</artifactId>
+			<version>0.36.0</version>
+		</dependency>
 		<!-- Libreria Apache Tika para PDF, Word, txt, etc etc -->
 		<dependency>
 			<groupId>org.apache.tika</groupId>
@@ -127,6 +127,44 @@
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-parsers-standard-package</artifactId>
 			<version>2.9.2</version>
+		</dependency>
+		<!-- Google API Client (Gmail) -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>1.34.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-gson</artifactId>
+			<version>1.43.3</version>
+		</dependency>
+
+		<!-- Gmail service -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-gmail</artifactId>
+			<version>v1-rev20230123-2.0.0</version>
+		</dependency>
+
+
+		<!-- JavaMail (API vieja javax.mail, para no tocar tus imports) -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 	</dependencies>
 

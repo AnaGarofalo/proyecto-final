@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class WhatsappWebhookController {
     private final WhatsappProperties props;
     private final WhatsappApiClient client;
+    private final ConversationFlowService conversationFlowService;
     private final ObjectMapper mapper = new ObjectMapper();
     private static final String FORBIDDEN_MESSAGE = "INVALID ACCESS";
 
@@ -49,12 +50,20 @@ public class WhatsappWebhookController {
                     String from = msg.path("from").asText();
                     String text = extractUserText(msg);
 
-                    String answer = (text == null || text.isBlank())
-                            ? "Recibido ✅"
-                            : "Nestlé Agent: " + text;
-
-                    log.info("WA IN from={} text='{}' -> replying='{}'", from, text, answer);
-                    client.sendText(from, answer);
+                    if (text == null || text.isBlank()) {
+                        String answer = "Recibido ✅";
+                        log.info("WA IN from={} text='{}' -> replying='{}'", from, text, answer);
+                        client.sendText(from, answer);
+                    } else {
+                        try {
+                            String iaResponse = conversationFlowService.getResponseForMessage(text, from);
+                            log.info("WA IN from={} text='{}' -> IA response='{}'", from, text, iaResponse);
+                            client.sendText(from, iaResponse);
+                        } catch (Exception e) {
+                            log.error("Error obteniendo respuesta IA para from={} text='{}'", from, text, e);
+                            client.sendText(from, "Lo siento, ha ocurrido un error. Inténtalo más tarde.");
+                        }
+                    }
                 }
             }
         } catch (Exception e) {

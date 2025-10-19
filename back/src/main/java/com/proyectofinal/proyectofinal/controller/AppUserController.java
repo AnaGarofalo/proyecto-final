@@ -70,12 +70,20 @@ public class AppUserController {
         return ResponseEntity.ok(dto);
     }
 
-    // Actualizar usuario (solo email)
+    // Actualizar usuario (email y/o contraseña)
     @PutMapping("/{externalId}")
     public ResponseEntity<AppUserMinimalDTO> updateUser(@PathVariable String externalId,
             @RequestBody AppUserLoginDTO dto) {
         UserValidation.validateEmail(dto.getEmail());
-        AppUser updatedUser = appUserService.updateEmailByExternalId(externalId, dto.getEmail());
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            UserValidation.validatePassword(dto.getPassword());
+        }
+        
+        AppUser updatedUser = appUserService.updateUserByExternalId(
+            externalId, 
+            dto.getEmail(), 
+            dto.getPassword()
+        );
         AppUserMinimalDTO responseDto = EntityMapper.map(updatedUser, AppUserMinimalDTO.class);
         return ResponseEntity.ok(responseDto);
     }

@@ -1,9 +1,20 @@
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { useState, useEffect } from "react";
 import nestleLogo from "../assets/logo/nestleLogo.png";
 import { Colors } from "../utils/Colors";
 import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
+import { getUserEmailFromToken } from "../utils/JwtUtils"; 
+
 
 const Header = () => {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Extraer el email del token cuando se monta el componente
+    const email = getUserEmailFromToken();
+    setUserEmail(email);
+  }, []);
+
   return (
     <AppBar
       position="fixed"
@@ -32,8 +43,8 @@ const Header = () => {
             fontWeight: 400,
           }}
         >
-          {/* ACA PONER LA LOGICA PARA MOSTRAR AL USUARIO LOGUEADO */}
-          Usuario: Homero J
+          {/* Mostrar el email real del usuario logueado */}
+          Usuario: {userEmail || 'Usuario'}
         </Typography>
 
         <Box
