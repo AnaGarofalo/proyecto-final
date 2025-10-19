@@ -40,7 +40,7 @@ const Sidebar = () => {
       path: NavigationRoute.CHAT_USERS,
     },
     { text: "Usuarios", icon: <PeopleIcon />, path: NavigationRoute.USERS },
-    { text: "Ticket", icon: <TicketIcon />, path: NavigationRoute.TICKET }
+    { text: "Tickets", icon: <TicketIcon />, path: NavigationRoute.TICKET }
   ];
   // Funcion para manejar el cierre de sesion
 
