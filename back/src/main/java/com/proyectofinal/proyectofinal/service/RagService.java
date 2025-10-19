@@ -51,11 +51,8 @@ public class RagService {
             }
 
             Document created = documentService.saveFile(f, appUser);
-            log.info("Creating document for {}", f.getOriginalFilename());
 
             try {
-                log.info("Indexing {}", f.getOriginalFilename());
-
                 openAiService.indexFile(text, created.getExternalId());
                 documents.add(created);
             } catch (Exception e) {
@@ -74,7 +71,6 @@ public class RagService {
         log.info("Removing document with external id {}", externalId);
         Document document = documentService.markAsDeleted(externalId);
 
-        log.info("Removing embeddings for document with external id {}", externalId);
         openAiService.removeFile(externalId);
         return document;
     }

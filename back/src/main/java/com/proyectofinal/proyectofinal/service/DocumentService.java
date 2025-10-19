@@ -3,25 +3,24 @@ package com.proyectofinal.proyectofinal.service;
 import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.model.Document;
 import com.proyectofinal.proyectofinal.repository.DocumentRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 public class DocumentService extends AbstractService<Document, DocumentRepository> {
 
-    private final AppUserService appUserService;
-
-    public DocumentService(DocumentRepository repository, AppUserService appUserService) {
+    public DocumentService(DocumentRepository repository) {
         super(repository, Document.class);
-        this.appUserService = appUserService;
     }
 
     public Document saveFile(MultipartFile file, AppUser appUser) {
         String fileName = file.getOriginalFilename();
+        log.info("Creating document for file {}", fileName);
 
         Document document = Document.builder()
                 .fileName(fileName)
@@ -36,6 +35,8 @@ public class DocumentService extends AbstractService<Document, DocumentRepositor
     }
 
     public Document markAsDeleted(String externalId) {
+        log.info("Deleting document for with externalId {}", externalId);
+
         Document document = getByExternalId(externalId);
         document.setDeletedAt(LocalDateTime.now());
         return repository.save(document);

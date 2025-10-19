@@ -16,12 +16,14 @@ import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class OpenAiService {
 
@@ -44,13 +46,18 @@ public class OpenAiService {
 
     // Indexa el texto, genera chunks, obtiene embeddings y los guarda
     public void indexFile(String text, String documentExternalId) {
+        log.info("Indexing document with externalId {}", documentExternalId);
         DocumentSplitter splitter = DocumentSplitters.recursive(800, 200);
         Metadata meta = Metadata.from(DOCUMENT_ID, documentExternalId);
         Document doc = Document.from(text, meta);
 
+        log.info("Splitting document with externalId {}", documentExternalId);
         List<TextSegment> segments = splitter.split(doc);
         if (!segments.isEmpty()) {
+            log.info("Creating embeddings for document with externalId {}", documentExternalId);
             List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
+
+            log.info("Saving embeddings for document with externalId {}", documentExternalId);
             for (int i = 0; i < segments.size(); i++) {
                 store.add(embeddings.get(i), segments.get(i));
             }
@@ -59,13 +66,17 @@ public class OpenAiService {
 
     // Remueve los embeddings nacidos de un documento en particular
     public void removeFile(String documentExternalId) {
+        log.info("Removing embeddings for document with external id {}", documentExternalId);
+
         String sql = "DELETE FROM embeddings WHERE metadata ->> 'document_id' = ?";
         embeddingJdbcTemplate.update(sql, documentExternalId);
     }
 
     // Genera las respuestas usando el contexto más relevante
     public String answerFromContext(String question, int maxResults, String systemPrompt) {
+
         String context = buildContext(question, maxResults);
+        log.info("Requesting answer from OpenAi: question {}, context {}, systemPrompt {}", question, context, systemPrompt);
         return generateAnswer(question, context, systemPrompt);
     }
 
