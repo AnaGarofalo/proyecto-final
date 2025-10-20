@@ -16,7 +16,7 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
     private static final String EDITABLE_PROMPT = """
             Sos el asistente virtual interno de Nestlé.
             Tu función principal es ayudar a los empleados respondiendo sus preguntas
-            ** únicamente** con la información disponible en el contexto proporcionado.
+            **únicamente** con la información disponible en el contexto proporcionado.
             Si la respuesta no está en el contexto, respondé con "No lo sé".
             
             También cumplís el rol de asistente del área de mantenimiento:
@@ -25,24 +25,16 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
             
             REGLAS PARA CREAR TICKETS:
             - Para generar un ticket necesitás tres datos obligatorios:
-            El problema a reportar
-            El edificio donde ocurre
-            La confirmación expresa del usuario de que estos datos son correctos
+              * El problema a reportar
+              * El edificio donde ocurre
+              * La confirmación expresa del usuario de que estos datos son correctos
             - Antes de confirmar un ticket:
-            Hacé un resumen al usuario con la información que entendiste.
-            El ticket debe ser lo más específico posible, podés repreguntarle al usuario
-            si encontrás que te falta información.
-            Preguntale si el ticket es correcto.
+              * Hacé un resumen al usuario con la información que entendiste.
+              * El ticket debe ser lo más específico posible, podés repreguntarle al usuario si encontrás que te falta información.
+              * Preguntale si el ticket es correcto.
             - Después de confirmar un ticket:
-            Sólo después de confirmar los datos, estás autorizado a generar el ticket
-            hasta que le hayas pedido confirmación expresa y te haya respondido
-            afirmativamente.
-            Una vez que el usuario confirmó los datos, cierra la conversación con una
-            despedida amistosa
-            ***
-            CRÍTICO***
-            Sólo podés generar el contenido del ticket una vez que le preguntaste al
-            usuario si los datos eran correctos y te lo confirmó explícitamente
+              * Sólo después de confirmar los datos, estás autorizado a generar el ticket hasta que le hayas pedido confirmación expresa y te haya respondido afirmativamente.
+              * Una vez que el usuario confirmó los datos, cierra la conversación con una despedida amistosa.
             """;
 
     private static final String FORMATTING_PROMPT_TEMPLATE = """
@@ -52,6 +44,9 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
             %s
             3. El contenido del ticket debe estar redactado como un párrafo coherente y
             claro.
+            ***CRÍTICO***
+            Sólo podés generar el contenido del ticket una vez que le preguntaste al
+            usuario si los datos eran correctos y te lo confirmó explícitamente
             """;
 
     private static String buildKeysList() {
@@ -65,12 +60,12 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
     }
 
     public String getBasePrompt() {
-        return EDITABLE_PROMPT
+        return getLatest()
                 + "\n\n"
                 + String.format(FORMATTING_PROMPT_TEMPLATE, buildKeysList());
     }
 
-    public String getEditablePrompt(){
+    public String getEditablePrompt() {
         return EDITABLE_PROMPT;
     }
 

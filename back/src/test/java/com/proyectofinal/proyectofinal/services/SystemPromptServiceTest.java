@@ -15,7 +15,7 @@ class SystemPromptServiceTest extends AbstractTest {
 
     @Test
     void getBasePrompt_containsAllIAResponseKeysWithDefinitions() {
-        String prompt = systemPromptService.getLatest().getPrompt();
+        String prompt = systemPromptService.getBasePrompt();
 
         for (IAResponseKeys key : IAResponseKeys.values()) {
             // Comprobamos que aparezca la clave exacta
@@ -27,7 +27,7 @@ class SystemPromptServiceTest extends AbstractTest {
 
     @Test
     void getBasePrompt_containsFormattingSection() {
-        String prompt = systemPromptService.getLatest().getPrompt();
+        String prompt = systemPromptService.getBasePrompt();
 
         // Verificamos que contenga la sección de formato
         assertTrue(prompt.contains("FORMATO DE RESPUESTA:"), "Prompt should contain formatting header");
