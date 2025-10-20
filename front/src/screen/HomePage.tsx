@@ -1,10 +1,12 @@
 import { Typography } from "@mui/material";
+import { getUserEmailFromToken } from "../utils/JwtUtils";
 
 export default function HomePage() {
+  const userEmail = getUserEmailFromToken();
+
   return (
     <Typography variant="h5" sx={{ mt: 4 }}>
-        {/* ACA PONER LA LOGICA PARA MOSTRAR AL USUARIO LOGUEADO */}
-      Bienvenido Homero J! 
+      ¡Bienvenido {userEmail ? userEmail : ""}!
     </Typography>
   );
 }
