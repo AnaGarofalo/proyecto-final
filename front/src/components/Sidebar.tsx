@@ -12,6 +12,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
+import TicketIcon from "@mui/icons-material/ConfirmationNumber";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Colors } from "../utils/Colors";
 import { NavigationRoute } from "../utils/NavigationUtils";
@@ -39,6 +40,7 @@ const Sidebar = () => {
       path: NavigationRoute.CHAT_USERS,
     },
     { text: "Usuarios", icon: <PeopleIcon />, path: NavigationRoute.USERS },
+    { text: "Tickets", icon: <TicketIcon />, path: NavigationRoute.TICKET }
   ];
   // Funcion para manejar el cierre de sesion
 

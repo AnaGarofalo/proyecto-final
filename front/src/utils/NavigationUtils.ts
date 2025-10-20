@@ -5,6 +5,7 @@ export const NavigationRoute = {
   DOCUMENTS: "/documents",
   CHAT_USERS: "/chat-users",
   USERS: "/users",
+  TICKET: "/ticket",
 } as const;
 
 export type NavigationRoute =
