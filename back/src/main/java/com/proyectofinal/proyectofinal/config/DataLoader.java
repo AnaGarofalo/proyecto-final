@@ -32,17 +32,16 @@ public class DataLoader implements CommandLineRunner {
     private void createFirstUser() {
         Optional<AppUser> opExistingUser = appUserService.findActiveByEmail("admin@root.com");
         if (opExistingUser.isEmpty()) {
-            AppUserLoginDTO appUserLoginDTO = AppUserLoginDTO.builder().email("admin@root.com").password("Pass123")
+            AppUserLoginDTO appUserLoginDTO = AppUserLoginDTO.builder().email("admin@root.com").password("Password123")
                     .build();
             appUserService.create(appUserLoginDTO);
         }
     }
 
     private void createFirstPromptData() {
-        Optional<SystemPrompt> opExistingPrompt = systemPromptService.findByTicketEmail("helpdesk@nestle.com");
-        if (opExistingPrompt.isEmpty()) {
+        if (systemPromptService.getLatest() == null) {
             SystemPromptDTO systemPromptDTO = SystemPromptDTO.builder()
-                    .prompt("You are an AI assistant for Nestle's IT helpdesk. Your task is to help users with their technical issues related to Nestle's products and services. Always respond in a professional and courteous manner, providing clear and concise solutions.")
+                    .prompt(systemPromptService.getEditablePrompt())
                     .ticketEmail("helpdesk@nestle.com")
                     .build();
             systemPromptService.create(systemPromptDTO);
