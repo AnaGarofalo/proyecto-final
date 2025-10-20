@@ -4,6 +4,8 @@ import com.proyectofinal.proyectofinal.dto.app_user.AppUserLoginDTO;
 import com.proyectofinal.proyectofinal.exception.PFNotFoundException;
 import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.repository.AppUserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.List;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class AppUserService extends AbstractService<AppUser, AppUserRepository> {
     private final PasswordEncoder passwordEncoder;
@@ -30,8 +33,19 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
                 .orElseThrow(() -> new PFNotFoundException(email, "email", AppUser.class));
     }
 
+    public AppUser getFromToken() {
+        // Obtener el email del usuario autenticado desde el contexto de seguridad
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        // Buscar el usuario activo por email
+        return findActiveByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+    }
+
     // Método para validar login (email + password)
     public AppUser validateLogin(String email, String password) {
+        log.info("Login attempt for user user with email {}", email);
+
         AppUser user = getByEmail(email);
         
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -47,6 +61,7 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     }
 
     public AppUser create(AppUserLoginDTO creationDTO) {
+        log.info("Creating user with email {}", creationDTO.getEmail());
         Optional<AppUser> opExistingUser = findActiveByEmail(creationDTO.getEmail());
         if (opExistingUser.isPresent()) {
             throw new IllegalArgumentException(
@@ -59,6 +74,8 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     }
 
     public AppUser updateUserByExternalId(String externalId, String newEmail, String newPassword) {
+        log.info("Updating user with externalId {}", externalId);
+
         AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
                 .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
         
@@ -78,6 +95,7 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
     }
 
     public void softDeleteByExternalId(String externalId) {
+        log.info("Deleting user with externalId {}", externalId);
         AppUser user = repository.findByExternalIdAndDeletedAtIsNull(externalId)
                 .orElseThrow(() -> new PFNotFoundException(externalId, "externalId", AppUser.class));
         user.setDeletedAt(LocalDateTime.now());

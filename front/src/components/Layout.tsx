@@ -20,10 +20,11 @@ const Layout = () => {
           bgcolor: Colors.SEPTENARY_WHITE,
           width: `calc(100vw - ${DRAWER_WIDTH_PX}px)`,
           height: `calc(100vh - ${HEADER_HEIGHT_PX}px)`,
-          p: 4
+          marginTop: HEADER_HEIGHT_PX + "px", 
+          p: 4, 
+          overflow: "auto"
         }}
       >
-        <Toolbar />
         <Outlet />
       </Box>
     </Box>

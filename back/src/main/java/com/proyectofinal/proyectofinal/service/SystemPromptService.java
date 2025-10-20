@@ -1,20 +1,24 @@
 package com.proyectofinal.proyectofinal.service;
 
+import com.proyectofinal.proyectofinal.dto.SystemPromptDTO;
+import com.proyectofinal.proyectofinal.model.SystemPrompt;
+import com.proyectofinal.proyectofinal.repository.SystemPromptRepository;
 import com.proyectofinal.proyectofinal.types.IAResponseKeys;
+
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class SystemPromptService {
-
-    // TODO: hacer esto editable y que se guarde en la bdd
+public class SystemPromptService extends AbstractService<SystemPrompt, SystemPromptRepository> {
     private static final String EDITABLE_PROMPT = """
             Sos el asistente virtual interno de Nestlé.
             Tu función principal es ayudar a los empleados respondiendo sus preguntas
             **únicamente** con la información disponible en el contexto proporcionado.
             Si la respuesta no está en el contexto, respondé con "No lo sé".
-
+            
             También cumplís el rol de asistente del área de mantenimiento:
             recibís reportes de problemas y, cuando corresponda, generás tickets
             para solucionarlos.
@@ -30,19 +34,19 @@ public class SystemPromptService {
               * Preguntale si el ticket es correcto.
             - Después de confirmar un ticket:
               * Sólo después de confirmar los datos, estás autorizado a generar el ticket hasta que le hayas pedido confirmación expresa y te haya respondido afirmativamente.
-              * Una vez que el usuario confirmó los datos, cierra la conversación con una despedida amistosa
-              
-            ***CRÍTICO***
-            Sólo podés generar el contenido del ticket una vez que le preguntaste al usuario si los datos eran correctos y te lo confirmó explícitamente  
+              * Una vez que el usuario confirmó los datos, cierra la conversación con una despedida amistosa.
             """;
 
-    // Sección 2: Formato (no editable)
     private static final String FORMATTING_PROMPT_TEMPLATE = """
             FORMATO DE RESPUESTA:
             1. Siempre devolvé la respuesta en formato JSON válido, sin texto adicional.
             2. El JSON debe tener las siguientes claves (case sensitive):
-               %s
-            3. El contenido del ticket debe estar redactado como un párrafo coherente y claro.
+            %s
+            3. El contenido del ticket debe estar redactado como un párrafo coherente y
+            claro.
+            ***CRÍTICO***
+            Sólo podés generar el contenido del ticket una vez que le preguntaste al
+            usuario si los datos eran correctos y te lo confirmó explícitamente
             """;
 
     private static String buildKeysList() {
@@ -51,9 +55,40 @@ public class SystemPromptService {
                 .collect(Collectors.joining("\n               "));
     }
 
+    public SystemPromptService(SystemPromptRepository systemPromptRepository) {
+        super(systemPromptRepository, SystemPrompt.class);
+    }
+
     public String getBasePrompt() {
-        return EDITABLE_PROMPT
+        return getLatest()
                 + "\n\n"
-                + FORMATTING_PROMPT_TEMPLATE.formatted(buildKeysList());
+                + String.format(FORMATTING_PROMPT_TEMPLATE, buildKeysList());
+    }
+
+    public String getEditablePrompt() {
+        return EDITABLE_PROMPT;
+    }
+
+    public SystemPrompt getLatest() {
+        List<SystemPrompt> all = repository.findAll();
+        if (all.isEmpty())
+            return null;
+        SystemPrompt last = all.getLast();
+        return new SystemPrompt(last.getPrompt(), last.getTicketEmail());
+    }
+
+    public SystemPrompt create(SystemPromptDTO dto) {
+        SystemPrompt entity = SystemPrompt.builder()
+                .prompt(dto.getPrompt())
+                .ticketEmail(dto.getTicketEmail())
+                .build();
+        return repository.save(entity);
+    }
+
+    public SystemPrompt update(String prompt, String ticketEmail) {
+        SystemPrompt existing = getLatest();
+        existing.setPrompt(prompt);
+        existing.setTicketEmail(ticketEmail);
+        return repository.save(existing);
     }
 }

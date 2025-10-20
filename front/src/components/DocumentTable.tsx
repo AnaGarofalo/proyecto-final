@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import { BaseTable, type Column } from "./base/BaseTable";
 import { Colors } from "../utils/Colors";
 import type { Document as DocModel } from "../model/Document";
+import DocumentRemovalModal from "./DocumentRemovalModal";
 
 interface DocumentTableProps {
   documents: DocModel[];
+  afterDelete: (deleted: DocModel) => void;
 }
 
-const DocumentTable: React.FC<DocumentTableProps> = ({ documents }) => {
+const DocumentTable: React.FC<DocumentTableProps> = ({ documents, afterDelete }) => {
+  const [documentToDelete, setDocumentToDelete] = useState<DocModel | null>(null);
   const columns: Column<DocModel>[] = [
     { field: "fileName", label: "Archivo", flex: 1.5 },
     {
@@ -30,8 +33,8 @@ const DocumentTable: React.FC<DocumentTableProps> = ({ documents }) => {
       align: "center",
       width: 100,
       sortable: false, // Desactiva la ordenación para esta columna
-      render: () => (
-        <IconButton sx={{ color: Colors.QUARTERNARY_DARK_GRAY }}>
+      render: (_value, row) => (
+        <IconButton sx={{ color: Colors.QUARTERNARY_DARK_GRAY }} onClick={() => setDocumentToDelete(row)}>
           <DeleteIcon />
         </IconButton>
       ),
@@ -53,8 +56,15 @@ const DocumentTable: React.FC<DocumentTableProps> = ({ documents }) => {
         rows={documents}
         searchFields={["fileName"]}
         searchPlaceholder="Buscar por nombre de archivo"
-        pageSize={5}
       />
+      {documentToDelete && (
+        <DocumentRemovalModal
+          open={true}
+          selectedDocument={documentToDelete}
+          closeModal={() => setDocumentToDelete(null)}
+          afterDelete={afterDelete}
+        />
+      )}
     </Box>
   );
 };

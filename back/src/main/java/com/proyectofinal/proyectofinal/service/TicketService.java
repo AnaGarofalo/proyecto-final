@@ -3,6 +3,7 @@ package com.proyectofinal.proyectofinal.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.proyectofinal.proyectofinal.model.ChatUser;
@@ -10,6 +11,7 @@ import com.proyectofinal.proyectofinal.model.Conversation;
 import com.proyectofinal.proyectofinal.model.Ticket;
 import com.proyectofinal.proyectofinal.repository.TicketRepository;
 
+@Slf4j
 @Service
 public class TicketService extends AbstractService<Ticket, TicketRepository> {
     public TicketService(TicketRepository repository) {
@@ -17,6 +19,7 @@ public class TicketService extends AbstractService<Ticket, TicketRepository> {
     }
 
     public void create(ChatUser chatUser, String content, Conversation conversation) {
+        log.info("Creating ticket for conversation {}", conversation.getExternalId());
         var ticket = Ticket.builder()
                 .chatUser(chatUser)
                 .conversation(conversation)

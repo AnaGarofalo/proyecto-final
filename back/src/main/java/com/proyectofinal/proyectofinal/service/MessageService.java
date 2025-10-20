@@ -4,9 +4,11 @@ import com.proyectofinal.proyectofinal.model.Conversation;
 import com.proyectofinal.proyectofinal.model.Message;
 import com.proyectofinal.proyectofinal.repository.MessageRepository;
 import com.proyectofinal.proyectofinal.types.MessageOrigin;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class MessageService extends AbstractService<Message, MessageRepository>{
     public MessageService(MessageRepository repository) {
@@ -14,7 +16,10 @@ public class MessageService extends AbstractService<Message, MessageRepository>{
     }
 
     public Message create(Conversation conversation, String content, MessageOrigin origin) {
+        log.info("Attempting to create new message");
+
         checkElementsValidity(conversation, content, origin);
+        log.info("Creating new message for conversation {} and origin {}", conversation.getExternalId(), origin);
 
         Message message = Message.builder()
                 .conversation(conversation)

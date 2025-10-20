@@ -39,14 +39,9 @@ const Documents: React.FC = () => {
     setIsUploading(true); // Indica que se está subiendo un documento (bloquea el botón de Confirmar)
 
     try {
-      const uploadedDocs: DocModel[] = [];
+      const uploadedDocs = await DocumentService.uploadDocuments(selectedFiles);
 
-      for (const file of selectedFiles) {
-        const res = await DocumentService.uploadDocument(file);
-        uploadedDocs.push(res.data);
-      }
-
-      setDocuments((prev) => [...uploadedDocs, ...prev]);
+      setDocuments((prev) => [...uploadedDocs.data, ...prev]);
       setOpenModal(false);
       setSelectedFiles([]);
       ToastUtil.success("Documentos cargados con éxito");
@@ -57,30 +52,23 @@ const Documents: React.FC = () => {
     }
   };
 
+  const afterDelete = (deleted: DocModel) => setDocuments(current => current.filter(doc => doc.externalId !== deleted.externalId));
+
+
   return (
     <>
-      {/* Ocultar "Rows per page" */}
-      <style>{`
-        .MuiTablePagination-selectLabel,
-        .MuiTablePagination-select,
-        .MuiTablePagination-selectIcon {
-          display: none !important;
-        }
-      `}</style>
-
       <Box
         sx={{
           flexGrow: 1,
           px: 3,
           backgroundColor: Colors.SEPTENARY_WHITE,
-          height: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           overflow: "hidden",
         }}
       >
-        <DocumentTable documents={documents} />
+        <DocumentTable documents={documents} afterDelete={afterDelete} />
 
         <Box
           sx={{
