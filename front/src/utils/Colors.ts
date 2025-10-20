@@ -9,5 +9,6 @@ export enum Colors {
   HOVER_BLUE = '#125871',
   HOVER_WHITE = '#f4f8fb',
   HOVER_WHITE_TWO = '#fafafa',
-
+  TERMINAL_BG = '#000000',
+  TERMINAL_TEXT_GREEN = '#00FF41',
 }
