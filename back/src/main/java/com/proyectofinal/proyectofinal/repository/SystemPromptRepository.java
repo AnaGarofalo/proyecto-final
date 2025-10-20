@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface SystemPromptRepository extends AbstractRepository<SystemPrompt> {
-    Optional<SystemPrompt> findByTicketEmail(String ticketEmail);
     List<SystemPrompt> findAll();
 }

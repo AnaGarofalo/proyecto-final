@@ -1,7 +1,9 @@
 package com.proyectofinal.proyectofinal.controller;
 
 import com.proyectofinal.proyectofinal.dto.SystemPromptDTO;
+import com.proyectofinal.proyectofinal.model.SystemPrompt;
 import com.proyectofinal.proyectofinal.service.SystemPromptService;
+import com.proyectofinal.proyectofinal.utils.EntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +16,15 @@ public class SystemPromptController {
 
     @GetMapping
     public ResponseEntity<SystemPromptDTO> getLatest() {
-    SystemPromptDTO dto = systemPromptService.getLatest();
-        if (dto == null) return ResponseEntity.noContent().build();
+        SystemPrompt systemPrompt = systemPromptService.getLatest();
+        SystemPromptDTO dto = EntityMapper.map(systemPrompt, SystemPromptDTO.class);
         return ResponseEntity.ok(dto);
     }
 
     @PatchMapping
     public ResponseEntity<SystemPromptDTO> patch(@RequestBody SystemPromptDTO request) {
-        SystemPromptDTO saved = systemPromptService.update(request.getPrompt(), request.getTicketEmail());
-        return ResponseEntity.ok(saved);
+        SystemPrompt saved = systemPromptService.update(request.getPrompt(), request.getTicketEmail());
+        SystemPromptDTO dto = EntityMapper.map(saved, SystemPromptDTO.class);
+        return ResponseEntity.ok(dto);
     }
 }
