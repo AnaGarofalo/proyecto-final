@@ -1,10 +1,10 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { GridDeleteIcon } from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { BaseTable, type Column } from "./base/BaseTable";
 import { BaseSwitch } from "./base/BaseSwitch";
+import BaseIconButton from "./base/BaseIconButton";
 import type { ChatUser } from "../model/ChatUser";
-import { Colors } from "../utils/Colors";
 
 interface ChatUserTableProps {
   chatUsers: ChatUser[];
@@ -34,9 +34,9 @@ const ChatUserTable: React.FC<ChatUserTableProps> = ({
       label: "Borrar",
       sortable: false,
       render: (_value, row) => (
-        <GridDeleteIcon
+        <BaseIconButton
           onClick={() => onDelete(row)}
-          style={{ cursor: "pointer", color: Colors.QUARTERNARY_DARK_GRAY }}
+          icon={<DeleteIcon />}
         />
       ),
     },

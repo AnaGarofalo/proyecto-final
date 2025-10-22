@@ -24,22 +24,22 @@ export default function Users() {
   const [userToEdit, setUserToEdit] = useState<AppUserMinimalDTO | null>(null);
 
   const columns: Column<AppUserMinimalDTO>[] = [
-    { 
-      field: 'email', 
-      label: 'Correo electrónico', 
-      flex: 1 
+    {
+      field: 'email',
+      label: 'Correo electrónico',
+      flex: 1
     },
     {
       label: 'Acciones',
       width: 150,
       render: (_, row) => (
         <Box display="flex" gap={1}>
-          <BaseIconButton 
-            onClick={() => setUserToEdit(row)}  
+          <BaseIconButton
+            onClick={() => setUserToEdit(row)}
             icon={<EditIcon />}
           />
-          <BaseIconButton 
-            onClick={() => setUserToDelete(row)}  
+          <BaseIconButton
+            onClick={() => setUserToDelete(row)}
             icon={<DeleteIcon />}
           />
         </Box>
@@ -81,7 +81,7 @@ export default function Users() {
 
     try {
       const updatedUser = await AppUserService.update(userToEdit.externalId, { email, password });
-      setUsers(users.map(user => 
+      setUsers(users.map(user =>
         user.externalId === userToEdit.externalId ? updatedUser.data : user
       ));
       ToastUtil.success('Usuario actualizado exitosamente');
@@ -104,13 +104,7 @@ export default function Users() {
     <Box>
       
 
-      <AddUserModal
-        onUserAdded={(user) => {
-          setUsers([...users, user]);
-          ToastUtil.success('Usuario agregado correctamente');
-        }}
-        existingUsers={users}
-      />
+
 
       <BaseTable
         columns={columns}
@@ -136,6 +130,14 @@ export default function Users() {
         user={userToEdit}
         onClose={() => setUserToEdit(null)}
         onSave={handleEditUser}
+      />
+
+      <AddUserModal
+        onUserAdded={(user) => {
+          setUsers([...users, user]);
+          ToastUtil.success('Usuario agregado correctamente');
+        }}
+        existingUsers={users}
       />
     </Box>
   );
