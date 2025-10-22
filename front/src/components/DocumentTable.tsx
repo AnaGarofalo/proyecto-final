@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Box, IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/DeleteOutline";
+import { Box } from "@mui/material";
 import { BaseTable, type Column } from "./base/BaseTable";
-import { Colors } from "../utils/Colors";
 import type { Document as DocModel } from "../model/Document";
 import DocumentRemovalModal from "./DocumentRemovalModal";
+import DeleteIcon from '@mui/icons-material/Delete';
+import BaseIconButton from './base/BaseIconButton';
 
 interface DocumentTableProps {
   documents: DocModel[];
@@ -30,13 +30,14 @@ const DocumentTable: React.FC<DocumentTableProps> = ({ documents, afterDelete })
     },
     {
       label: "Borrar",
-      align: "center",
-      width: 100,
-      sortable: false, // Desactiva la ordenación para esta columna
-      render: (_value, row) => (
-        <IconButton sx={{ color: Colors.QUARTERNARY_DARK_GRAY }} onClick={() => setDocumentToDelete(row)}>
-          <DeleteIcon />
-        </IconButton>
+  align: "left",  
+  width: 100,
+  sortable: false,
+  render: (_value, row) => (
+    <BaseIconButton 
+      onClick={() => setDocumentToDelete(row)}
+      icon={<DeleteIcon />}
+    />
       ),
     },
   ];
