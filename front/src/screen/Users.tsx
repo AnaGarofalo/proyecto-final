@@ -135,7 +135,6 @@ export default function Users() {
       <AddUserModal
         onUserAdded={(user) => {
           setUsers([...users, user]);
-          ToastUtil.success('Usuario agregado correctamente');
         }}
         existingUsers={users}
       />

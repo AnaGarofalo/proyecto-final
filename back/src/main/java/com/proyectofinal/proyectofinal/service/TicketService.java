@@ -30,6 +30,6 @@ public class TicketService extends AbstractService<Ticket, TicketRepository> {
 
     // AGREGO ESTO PARA LISTAR LOS TICKETS (LUIS)
     public List<Ticket> getAllTickets() {
-    return repository.findAll();
+    return repository.findAllByOrderByCreatedAtDesc();
 }
 }

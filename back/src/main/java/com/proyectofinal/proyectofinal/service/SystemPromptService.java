@@ -26,7 +26,7 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
             REGLAS PARA CREAR TICKETS:
             - Para generar un ticket necesitás tres datos obligatorios:
               * El problema a reportar
-              * El edificio donde ocurre
+              * El edificio donde ocurre: las únicas opciones son Edificio Motor y Edificio Velero. Si indican algún otro edificio, volvé a preguntar hasta que te indiquen uno de estos dos.
               * La confirmación expresa del usuario de que estos datos son correctos
             - Antes de confirmar un ticket:
               * Hacé un resumen al usuario con la información que entendiste.
@@ -39,7 +39,7 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
 
     private static final String FORMATTING_PROMPT_TEMPLATE = """
             FORMATO DE RESPUESTA:
-            1. Siempre devolvé la respuesta en formato JSON válido, sin texto adicional.
+            1. Siempre devolvé la respuesta en formato JSON válido, sin texto adicional. Nunca agregues la palabra json al antes del objeto json
             2. El JSON debe tener las siguientes claves (case sensitive):
             %s
             3. El contenido del ticket debe estar redactado como un párrafo coherente y
@@ -60,7 +60,7 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
     }
 
     public String getBasePrompt() {
-        return getLatest()
+        return getLatest().getPrompt()
                 + "\n\n"
                 + String.format(FORMATTING_PROMPT_TEMPLATE, buildKeysList());
     }

@@ -18,7 +18,7 @@ const ChatUserTable: React.FC<ChatUserTableProps> = ({
   onDelete,
 }) => {
   const columns: Column<ChatUser>[] = [
-    { field: "email", label: "Email", width: 200 },
+    { field: "email", label: "Correo electrónico", width: 200 },
     { field: "phoneNumber", label: "Teléfono" },
     {
       field: "blockedAt",

@@ -23,6 +23,7 @@ public class ConversationFlowService {
     private final ConversationService conversationService;
     private final MessageService messageService;
     private final RagService ragService;
+    private final SystemPromptService systemPromptService;
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -51,8 +52,13 @@ public class ConversationFlowService {
         if (!StringUtils.isEmpty(response.getTicketContent())) {
             log.info("Received ticket creation request from IA: finishing conversation");
             conversationService.markAsFinished(conversation);
-            ticketService.create(chatUser, messageContent, conversation);
-            emailSenderService.sendEmail(chatUser.getEmail(), "Soporte - Ticket Nuevo", response.getTicketContent());
+
+            try {
+                ticketService.create(chatUser, response.getTicketContent(), conversation);
+                emailSenderService.sendEmail(systemPromptService.getLatest().getTicketEmail(), "Soporte - Ticket Nuevo", response.getTicketContent());
+            } catch (Exception e) {
+                log.error("Error creating ticket", e);
+            }
         }
 
         return response.getUserResponse();
