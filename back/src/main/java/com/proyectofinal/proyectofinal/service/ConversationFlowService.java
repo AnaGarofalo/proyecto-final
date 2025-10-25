@@ -1,7 +1,9 @@
 package com.proyectofinal.proyectofinal.service;
 
 import com.proyectofinal.proyectofinal.dto.IAResponseDTO;
+import com.proyectofinal.proyectofinal.dto.MessageDTO;
 import com.proyectofinal.proyectofinal.dto.UserCheckResponseDTO;
+import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.model.ChatUser;
 import com.proyectofinal.proyectofinal.model.Conversation;
 import com.proyectofinal.proyectofinal.types.MessageOrigin;
@@ -24,12 +26,32 @@ public class ConversationFlowService {
     private final MessageService messageService;
     private final RagService ragService;
     private final SystemPromptService systemPromptService;
+    private final AppUserService appUserService;
 
     @Autowired
     private EmailSenderService emailSenderService;
 
     @Autowired
     private TicketService ticketService;
+
+    public MessageDTO getResponseForAppUserMessage(String messageContent) {
+        log.info("Received message from APP user");
+
+        AppUser appUser = appUserService.getFromToken();
+        Conversation conversation = conversationService.getOrCreateActiveConversationByAppUser(appUser);
+        messageService.create(conversation, messageContent, MessageOrigin.USER);
+
+        log.info("Requesting response from IA");
+        IAResponseDTO response = getIAResponse(conversation, messageContent);
+        messageService.create(conversation, response.getUserResponse(), MessageOrigin.BOT);
+
+        if (!StringUtils.isEmpty(response.getTicketContent())) {
+            log.info("Received ticket creation request from IA: finishing conversation");
+            conversationService.markAsFinished(conversation);
+        }
+
+        return new MessageDTO(response.getUserResponse(), MessageOrigin.BOT);
+    }
 
     public String getResponseForMessage(String messageContent, String phoneNumber) {
         log.info("Received message, processing response");
@@ -42,7 +64,7 @@ public class ConversationFlowService {
         }
         chatUser = userCheckResponseDTO.getChatUser();
 
-        Conversation conversation = conversationService.getOrCreateActiveConversationByUser(chatUser);
+        Conversation conversation = conversationService.getOrCreateActiveConversationByChatUser(chatUser);
         messageService.create(conversation, messageContent, MessageOrigin.USER);
 
         log.info("Requesting response from IA");

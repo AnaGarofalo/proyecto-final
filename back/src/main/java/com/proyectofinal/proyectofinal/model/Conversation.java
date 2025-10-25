@@ -18,6 +18,10 @@ public class Conversation extends AbstractModel {
 
     @ManyToOne
     private ChatUser chatUser;
+
+    @ManyToOne
+    private AppUser appUser;
+
     private LocalDateTime finalizedAt;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

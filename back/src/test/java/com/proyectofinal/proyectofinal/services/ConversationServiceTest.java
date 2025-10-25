@@ -20,16 +20,16 @@ class ConversationServiceTest extends AbstractTest {
     ConversationService conversationService;
 
     @Test
-    void create_chatUserIsNull() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> conversationService.create(null));
+    void create_ForChatUser_chatUserIsNull() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> conversationService.createForChatUser(null));
         assertTrue(exception.getMessage().contains("ChatUser is required"));
     }
 
     @Test
-    void create_success() {
+    void create_ForChatUser_success() {
         ChatUser chatUser = createSampleChatUser();
 
-        Conversation conversation = conversationService.create(chatUser);
+        Conversation conversation = conversationService.createForChatUser(chatUser);
 
         assertNotNull(conversation.getId());
         assertNotNull(conversation.getExternalId());
@@ -53,34 +53,34 @@ class ConversationServiceTest extends AbstractTest {
     }
 
     @Test
-    void getOrCreateActiveConversationByUserId_chatUserIsNull() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> conversationService.getOrCreateActiveConversationByUser(null));
+    void getOrCreateForChatUserActiveConversationByUserId_chatChatUserIsNull() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> conversationService.getOrCreateActiveConversationByChatUser(null));
         assertTrue(exception.getMessage().contains("ChatUser is required"));
 
-        verify(conversationService, never()).create(any(ChatUser.class));
+        verify(conversationService, never()).createForChatUser(any(ChatUser.class));
     }
 
     @Test
-    void getOrCreateActiveConversationByUserId_noPreviousConversation() {
+    void getOrCreateForChatUserActiveConversationByUserId_noPreviousConversationChat() {
         ChatUser chatUser = createSampleChatUser();
 
-        conversationService.getOrCreateActiveConversationByUser(chatUser);
-        verify(conversationService).create(chatUser);
+        conversationService.getOrCreateActiveConversationByChatUser(chatUser);
+        verify(conversationService).createForChatUser(chatUser);
     }
 
     @Test
-    void getOrCreateActiveConversationByUserId_previousValidConversation() {
+    void getOrCreateForChatUserActiveConversationByUserId_previousValidConversationChat() {
         Conversation previousConversation = createSampleConversation();
         ChatUser chatUser = previousConversation.getChatUser();
         reset(conversationService);
 
-        Conversation conversation = conversationService.getOrCreateActiveConversationByUser(chatUser);
+        Conversation conversation = conversationService.getOrCreateActiveConversationByChatUser(chatUser);
         assertEquals(previousConversation.getId(), conversation.getId());
-        verify(conversationService, never()).create(chatUser);
+        verify(conversationService, never()).createForChatUser(chatUser);
     }
 
     @Test
-    void getOrCreateActiveConversationByUserId_previousFinalizedConversation() {
+    void getOrCreateForChatUserActiveConversationByUserId_previousFinalizedConversationChat() {
         Conversation previousConversation = createSampleConversation();
 
         conversationService.markAsFinished(previousConversation);
@@ -88,13 +88,13 @@ class ConversationServiceTest extends AbstractTest {
         ChatUser chatUser = previousConversation.getChatUser();
         reset(conversationService);
 
-        Conversation conversation = conversationService.getOrCreateActiveConversationByUser(chatUser);
+        Conversation conversation = conversationService.getOrCreateActiveConversationByChatUser(chatUser);
         assertNotEquals(previousConversation.getId(), conversation.getId());
-        verify(conversationService).create(chatUser);
+        verify(conversationService).createForChatUser(chatUser);
     }
 
     @Test
-    void getOrCreateActiveConversationByUserId_previousInvalidConversation() {
+    void getOrCreateForChatUserActiveConversationByUserId_previousInvalidConversationChat() {
         Conversation previousConversation = createSampleConversation();
 
         previousConversation.setCreatedAt(LocalDateTime.now().minusMinutes(120L));
@@ -103,9 +103,9 @@ class ConversationServiceTest extends AbstractTest {
         ChatUser chatUser = previousConversation.getChatUser();
         reset(conversationService);
 
-        Conversation conversation = conversationService.getOrCreateActiveConversationByUser(chatUser);
+        Conversation conversation = conversationService.getOrCreateActiveConversationByChatUser(chatUser);
         assertNotEquals(previousConversation.getId(), conversation.getId());
-        verify(conversationService).create(chatUser);
+        verify(conversationService).createForChatUser(chatUser);
         verify(conversationService).markAsFinished(previousConversation);
     }
 }

@@ -38,6 +38,6 @@ public abstract class AbstractTest {
     }
 
     protected Conversation createSampleConversation() {
-        return conversationService.create(createSampleChatUser());
+        return conversationService.createForChatUser(createSampleChatUser());
     }
 }
