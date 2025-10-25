@@ -71,7 +71,7 @@ class ConversationFlowTest extends AbstractTest {
         String finalResponse = conversationFlowService.getResponseForMessage(messageContent, chatUser.getPhoneNumber());
 
         // Gets or creates conversation
-        verify(conversationService).getOrCreateActiveConversationByChatUser(chatUser);
+        verify(conversationService).getOrCreateActiveConversationByUser(chatUser);
 
         // Saves user message
         verify(messageService).create(any(Conversation.class), eq(messageContent), eq(MessageOrigin.USER));
@@ -98,7 +98,7 @@ class ConversationFlowTest extends AbstractTest {
         String finalResponse = conversationFlowService.getResponseForMessage(messageContent, chatUser.getPhoneNumber());
 
         // Gets or creates conversation
-        verify(conversationService).getOrCreateActiveConversationByChatUser(chatUser);
+        verify(conversationService).getOrCreateActiveConversationByUser(chatUser);
 
         // Saves user message
         verify(messageService).create(any(Conversation.class), eq(messageContent), eq(MessageOrigin.USER));
@@ -125,7 +125,7 @@ class ConversationFlowTest extends AbstractTest {
         String finalResponse = conversationFlowService.getResponseForMessage(messageContent, chatUser.getPhoneNumber());
 
         // Gets or creates conversation
-        verify(conversationService).getOrCreateActiveConversationByChatUser(chatUser);
+        verify(conversationService).getOrCreateActiveConversationByUser(chatUser);
 
         // Saves user message
         verify(messageService).create(any(Conversation.class), eq(messageContent), eq(MessageOrigin.USER));
@@ -148,7 +148,7 @@ class ConversationFlowTest extends AbstractTest {
         String finalResponse = conversationFlowService.getResponseForMessage(messageContent, chatUser.getPhoneNumber());
 
         // Gets or creates conversation
-        verify(conversationService).getOrCreateActiveConversationByChatUser(chatUser);
+        verify(conversationService).getOrCreateActiveConversationByUser(chatUser);
 
         // Saves user message
         verify(messageService).create(any(Conversation.class), eq(messageContent), eq(MessageOrigin.USER));

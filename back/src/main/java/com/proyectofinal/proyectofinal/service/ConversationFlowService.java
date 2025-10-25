@@ -3,7 +3,6 @@ package com.proyectofinal.proyectofinal.service;
 import com.proyectofinal.proyectofinal.dto.IAResponseDTO;
 import com.proyectofinal.proyectofinal.dto.MessageDTO;
 import com.proyectofinal.proyectofinal.dto.UserCheckResponseDTO;
-import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.model.ChatUser;
 import com.proyectofinal.proyectofinal.model.Conversation;
 import com.proyectofinal.proyectofinal.types.MessageOrigin;
@@ -37,8 +36,7 @@ public class ConversationFlowService {
     public MessageDTO getResponseForAppUserMessage(String messageContent) {
         log.info("Received message from APP user");
 
-        AppUser appUser = appUserService.getFromToken();
-        Conversation conversation = conversationService.getOrCreateActiveConversationByAppUser(appUser);
+        Conversation conversation = conversationService.getOrCreateActiveConversationByAppUser();
         messageService.create(conversation, messageContent, MessageOrigin.USER);
 
         log.info("Requesting response from IA");
@@ -64,7 +62,7 @@ public class ConversationFlowService {
         }
         chatUser = userCheckResponseDTO.getChatUser();
 
-        Conversation conversation = conversationService.getOrCreateActiveConversationByChatUser(chatUser);
+        Conversation conversation = conversationService.getOrCreateActiveConversationByUser(chatUser);
         messageService.create(conversation, messageContent, MessageOrigin.USER);
 
         log.info("Requesting response from IA");

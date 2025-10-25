@@ -3,6 +3,7 @@ package com.proyectofinal.proyectofinal.service;
 import com.proyectofinal.proyectofinal.model.AppUser;
 import com.proyectofinal.proyectofinal.model.ChatUser;
 import com.proyectofinal.proyectofinal.model.Conversation;
+import com.proyectofinal.proyectofinal.model.User;
 import com.proyectofinal.proyectofinal.repository.ConversationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,16 +19,17 @@ public class ConversationService extends AbstractService<Conversation, Conversat
         this.appUserService = appUserService;
     }
 
-    public Conversation getOrCreateActiveConversationByChatUser(ChatUser chatUser) {
+    public Conversation getOrCreateActiveConversationByUser(User user) {
         log.info("Attempting to fetch active conversation");
 
-        if (chatUser == null) {
+        if (user == null) {
             throw new IllegalArgumentException("Error fetching active conversation: ChatUser is required");
         }
 
-        log.info("Fetching active conversation for chat user {}", chatUser.getExternalId());
+        boolean isChatUser = user instanceof ChatUser;
+        log.info("Fetching active conversation for {} user {}", isChatUser ? "CHAT" : "APP", user.getExternalId());
 
-        Optional<Conversation> previousConversation = getActiveByChatUserId(chatUser.getId());
+        Optional<Conversation> previousConversation = getActiveByUserId(user.getId(), isChatUser);
         if (previousConversation.isPresent()) {
             // Si encuentra una conversación válida la devuelve
             log.info("Returning previous conversation for new message");
@@ -38,66 +40,25 @@ public class ConversationService extends AbstractService<Conversation, Conversat
             // Sino la crea
             log.info("Creating conversation for new message");
 
-            return createForChatUser(chatUser);
+            return create(user);
         }
     }
+
     public Conversation getOrCreateActiveConversationByAppUser() {
         AppUser appUser = appUserService.getFromToken();
-        return getOrCreateActiveConversationByAppUser(appUser);
+        return getOrCreateActiveConversationByUser(appUser);
     }
 
-    public Conversation getOrCreateActiveConversationByAppUser(AppUser appUser) {
-        log.info("Attempting to fetch active conversation");
-
-        if (appUser == null) {
-            throw new IllegalArgumentException("Error fetching active conversation: AppUser is required");
-        }
-
-        log.info("Fetching active conversation for APP user {}", appUser.getExternalId());
-
-        Optional<Conversation> previousConversation = getActiveByAppUserId(appUser.getId());
-        if (previousConversation.isPresent()) {
-            // Si encuentra una conversación válida la devuelve
-            log.info("Returning previous conversation for new message");
-
-            previousConversation.get().getMessages().size(); // inicializa la colección
-            return previousConversation.get();
-        } else {
-            // Sino la crea
-            log.info("Creating conversation for new message");
-
-            return createForAppUser(appUser);
-        }
-    }
-
-    private Optional<Conversation> getActiveByChatUserId(Long chatUserId) {
+    private Optional<Conversation> getActiveByUserId(Long userId, boolean isChatUser) {
         // Buscamos una conversación anterior que no haya terminado
-        Optional<Conversation> previousConversation = repository.findByChatUserIdAndFinalizedAtIsNull(chatUserId);
+        Optional<Conversation> previousConversation = isChatUser ? repository.findByChatUserIdAndFinalizedAtIsNull(userId) : repository.findByAppUserIdAndFinalizedAtIsNull(userId);
 
         // Si la conversación existe y el último mensaje es reciente, la devolvemos
         if (previousConversation.isPresent() && previousConversation.get().isRecentConversation()) {
             return previousConversation;
         } else if (previousConversation.isPresent()) {
             // Si la conversación existe pero el último mensaje tiene más de una hora, la marcamos como finalizada
-            log.info("Marking previous conversation as finished (timeout) for user {}", chatUserId);
-
-            markAsFinished(previousConversation.get());
-        }
-
-        // Sea que la conversación era muy antigua o no encontró ninguna, devolvemos vacío
-        return Optional.empty();
-    }
-
-    private Optional<Conversation> getActiveByAppUserId(Long appUserId) {
-        // Buscamos una conversación anterior que no haya terminado
-        Optional<Conversation> previousConversation = repository.findByAppUserIdAndFinalizedAtIsNull(appUserId);
-
-        // Si la conversación existe y el último mensaje es reciente, la devolvemos
-        if (previousConversation.isPresent() && previousConversation.get().isRecentConversation()) {
-            return previousConversation;
-        } else if (previousConversation.isPresent()) {
-            // Si la conversación existe pero el último mensaje tiene más de una hora, la marcamos como finalizada
-            log.info("Marking previous conversation as finished (timeout) for user {}", appUserId);
+            log.info("Marking previous conversation as finished (timeout) for {} user {}", isChatUser ? "CHAT" : "APP", userId);
 
             markAsFinished(previousConversation.get());
         }
@@ -117,30 +78,21 @@ public class ConversationService extends AbstractService<Conversation, Conversat
         return repository.save(conversation);
     }
 
-    public Conversation createForChatUser(ChatUser chatUser) {
-        if (chatUser == null) {
-            throw new IllegalArgumentException("Error creating conversation: ChatUser is required");
+    public Conversation create(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Error creating conversation: User is required");
         }
 
-        log.info("Creating conversation for CHAT user {}", chatUser.getExternalId());
+        boolean isChatUser = user instanceof ChatUser;
 
-        Conversation conversation = Conversation.builder()
-                .chatUser(chatUser)
-                .build();
+        log.info("Creating conversation for {} user {}", isChatUser ? "CHAT" : "APP", user.getExternalId());
 
-        return repository.save(conversation);
-    }
-
-    public Conversation createForAppUser(AppUser appUser) {
-        if (appUser == null) {
-            throw new IllegalArgumentException("Error creating conversation: AppUser is required");
+        Conversation conversation = new Conversation();
+        if (isChatUser) {
+            conversation.setChatUser((ChatUser) user);
+        } else {
+            conversation.setAppUser((AppUser) user);
         }
-
-        log.info("Creating conversation for APP user {}", appUser.getExternalId());
-
-        Conversation conversation = Conversation.builder()
-                .appUser(appUser)
-                .build();
 
         return repository.save(conversation);
     }
