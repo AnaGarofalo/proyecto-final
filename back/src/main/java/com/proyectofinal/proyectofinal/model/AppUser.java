@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @Setter
-public class AppUser extends AbstractModel {
+public class AppUser extends AbstractModel implements User {
     private String email;
     private String password; //hashed
     private LocalDateTime blockedAt;

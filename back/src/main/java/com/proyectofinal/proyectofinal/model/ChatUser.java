@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @Setter
-public class ChatUser extends AbstractModel {
+public class ChatUser extends AbstractModel implements User {
     private String email;
     private String phoneNumber;
     private LocalDateTime blockedAt;
