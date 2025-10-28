@@ -17,6 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Colors } from "../utils/Colors";
 import { NavigationRoute } from "../utils/NavigationUtils";
 import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
+import BaseButton from "./base/BaseButton";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -94,21 +95,15 @@ const Sidebar = () => {
         </List>
 
         {/* Botón Cerrar sesión */}
-        <Box sx={{ mt: "auto", mb: 2 }}>
-          <ListItemButton
+        <Box sx={{ mt: "auto", mb: 2, px: 2 }}>
+          <BaseButton
+            variantType="logout"
+            icon={<LogoutIcon />}
             onClick={handleLogout}
-            sx={{
-              backgroundColor: Colors.QUARTERNARY_DARK_GRAY,
-              "&:hover": {
-                backgroundColor: Colors.QUINARY_LIGHT_GRAY,
-              },
-            }}
+            fullWidth
           >
-            <ListItemIcon sx={{ color: Colors.SEPTENARY_WHITE }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Cerrar sesión" />
-          </ListItemButton>
+            Cerrar sesión
+          </BaseButton>
         </Box>
       </Box>
     </Drawer>

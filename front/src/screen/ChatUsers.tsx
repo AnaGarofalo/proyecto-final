@@ -3,9 +3,10 @@ import type { ChatUser } from "../model/ChatUser";
 import { ToastUtil } from "../utils/ToastUtils";
 import ChatUserService from "../service/ChatUserService";
 import BaseModal from "../components/base/BaseModal";
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { AddChatUserModal } from "../components/AddChatUserModal";
 import ChatUsersTable from "../components/ChatUsersTable";
+import { Colors } from "../utils/Colors";
 
 export default function ChatUsers() {
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
@@ -57,23 +58,38 @@ export default function ChatUsers() {
   }, []);
 
   return (
-    <>
-      <ChatUsersTable
-        chatUsers={chatUsers}
-        onToggleBlocked={toggleBlocked}
-        onDelete={setUserToDelete}
-      />
+  <>
+    <ChatUsersTable
+      chatUsers={chatUsers}
+      onToggleBlocked={toggleBlocked}
+      onDelete={setUserToDelete}
+    />
 
-      <BaseModal
-        open={userToDelete !== null}
-        onClose={() => setUserToDelete(null)}
-        onConfirm={() => deleteChatUser(userToDelete?.externalId ?? "")}
-        title="Eliminar usuario"
+    {/* Texto aclaratorio */}
+    <Box sx={{ mt: 2, mb: 3 }}>
+      <Typography 
+        variant="body2" 
+        sx={{ 
+          color: Colors.QUARTERNARY_DARK_GRAY,
+          fontFamily: 'Poppins, sans-serif',
+          fontSize: '0.875rem',
+          fontStyle: 'italic'
+        }}
       >
-        <Typography>¿Está seguro de que desea eliminar al usuario?</Typography>
-      </BaseModal>
+        Los usuarios se crean automáticamente cuando un empleado le escribe al bot y se autentica con un email válido.
+      </Typography>
+    </Box>
+
+    <BaseModal
+      open={userToDelete !== null}
+      onClose={() => setUserToDelete(null)}
+      onConfirm={() => deleteChatUser(userToDelete?.externalId ?? "")}
+      title="Eliminar usuario"
+    >
+      <Typography>¿Está seguro de que desea eliminar al usuario?</Typography>
+    </BaseModal>
 
       <AddChatUserModal existingUsers={chatUsers} addUser={addUser} />
     </>
-  );
-}
+    );
+  }
