@@ -31,11 +31,11 @@ const BaseButton: React.FC<Props> = ({ variantType = 'filled', icon, children, .
       }
       break
     case 'logout':
-      muiVariant = 'outlined'
+      muiVariant = 'contained'
       sx = {
-        borderColor: Colors.QUINARY_LIGHT_GRAY,
-        color: Colors.QUARTERNARY_DARK_GRAY,
-        '&:hover': { bgcolor: Colors.HOVER_WHITE_TWO }
+        bgcolor: Colors.QUARTERNARY_DARK_GRAY,
+        color: Colors.SEPTENARY_WHITE,
+        '&:hover': { bgcolor: Colors.QUINARY_LIGHT_GRAY }
       }
       break
   }

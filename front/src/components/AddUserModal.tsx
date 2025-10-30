@@ -6,9 +6,12 @@ import BaseInput from "./base/BaseInput";
 import { IconButton, InputAdornment } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ToastUtil } from "../utils/ToastUtils";
+import { Colors } from "../utils/Colors";
 import AppUserService from "../service/AppUserService";
 import type { AppUserMinimalDTO } from "../model/AppUser";
 import { z } from "zod";
@@ -91,6 +94,7 @@ export function AddUserModal({ onUserAdded, existingUsers = [] }: AddUserModalPr
             margin="normal"
             required
             fullWidth
+            icon={<EmailIcon sx={{ color: Colors.QUARTERNARY_DARK_GRAY, fontSize: 20 }} />}
           />
 
           <BaseInput
@@ -102,6 +106,7 @@ export function AddUserModal({ onUserAdded, existingUsers = [] }: AddUserModalPr
             margin="normal"
             required
             fullWidth
+            icon={<LockIcon sx={{ color: Colors.QUARTERNARY_DARK_GRAY, fontSize: 20 }} />}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

@@ -1,4 +1,6 @@
 import { Box } from "@mui/material";
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 import BaseButton from "./base/BaseButton";
 import { useState } from "react";
 import BaseModal from "./base/BaseModal";
@@ -8,6 +10,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { ToastUtil } from "../utils/ToastUtils";
 import ChatUserService from "../service/ChatUserService";
 import { chatUserSchema, type ChatUser, type CreateChatUser } from "../model/ChatUser";
+import { Colors } from "../utils/Colors";
 
 interface AddChatUserModalProps {
     existingUsers: ChatUser[];
@@ -70,6 +73,7 @@ export function AddChatUserModal({ existingUsers, addUser }: AddChatUserModalPro
                         errorMessage={errors.email?.message}
                         margin="normal"
                         required
+                        icon={<EmailIcon sx={{ color: Colors.QUARTERNARY_DARK_GRAY, fontSize: 20 }} />}
                     />
 
                     <BaseInput
@@ -79,6 +83,7 @@ export function AddChatUserModal({ existingUsers, addUser }: AddChatUserModalPro
                         errorMessage={errors.phoneNumber?.message}
                         margin="normal"
                         required
+                        icon={<PhoneIcon sx={{ color: Colors.QUARTERNARY_DARK_GRAY, fontSize: 20 }} />}
                     />
                 </form>
             }
