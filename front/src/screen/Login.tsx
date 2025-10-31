@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -9,11 +9,14 @@ import AppUserService from "../service/AppUserService";
 import { ToastUtil } from "../utils/ToastUtils";
 import { useNavigate } from "react-router-dom";
 import { NavigationRoute } from "../utils/NavigationUtils";
-import { Box } from "@mui/material";
+import { Box, IconButton, InputAdornment } from "@mui/material";
 import nestleLogo from "../assets/logo/nestleLogo.png";
+import { GridVisibilityOffIcon } from "@mui/x-data-grid";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+  
   const {
     register,
     handleSubmit,
@@ -62,12 +65,24 @@ const Login: React.FC = () => {
 
         <BaseInput
           label="Contraseña"
-          type="password"
+          type={showPassword ? "text" : "password"}
           {...register("password")}
           error={!!errors.password}
           errorMessage={errors.password?.message}
           margin="normal"
           required
+                    InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <GridVisibilityOffIcon /> : <GridVisibilityOffIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <BaseButton

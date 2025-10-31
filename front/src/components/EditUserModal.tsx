@@ -9,19 +9,9 @@ import type { AppUserMinimalDTO } from "../model/AppUser";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { createUserSchema } from "../utils/PasswordUtils";
 
-const editUserSchema = z.object({
-  email: z.string().email("Email inválido"),
-  password: z.string()
-    .regex(
-      /^(?=.*[A-Z])(?=.*\d).{6,}$/,
-      "La contraseña debe tener al menos 6 caracteres, una Mayúscula y un número"
-    )
-    .optional()
-    .or(z.literal("")),
-});
-
-type EditUserFormData = z.infer<typeof editUserSchema>;
+type EditUserFormData = z.infer<typeof createUserSchema>;
 
 interface EditUserModalProps {
   open: boolean;
@@ -34,7 +24,7 @@ export default function EditUserModal({ open, user, onClose, onSave }: EditUserM
   const [showPassword, setShowPassword] = useState(false);
   
   const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm<EditUserFormData>({
-    resolver: zodResolver(editUserSchema),
+    resolver: zodResolver(createUserSchema),
     defaultValues: {
       email: "",
       password: "",
