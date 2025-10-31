@@ -3,7 +3,6 @@ package com.proyectofinal.proyectofinal.service;
 import com.proyectofinal.proyectofinal.model.ChatUser;
 import com.proyectofinal.proyectofinal.repository.ChatUserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +13,8 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class ChatUserService extends AbstractService<ChatUser, ChatUserRepository> {
-    @Value("${valid.email.domain}")
-    private String validEmailDomain;
+    @Value("${valid.email.domains}")
+    private String validEmailDomains;
 
     public ChatUserService(ChatUserRepository repository) {
         super(repository, ChatUser.class);
@@ -92,7 +91,12 @@ public class ChatUserService extends AbstractService<ChatUser, ChatUserRepositor
     }
 
     private boolean isValidEmail(String email) {
-        return !StringUtils.isEmpty(email) && email.matches("^[a-zA-Z0-9._%+-]+@" + validEmailDomain + "\\.com$");
+        String[] validEmailDomainArray = validEmailDomains.replace(" ", "").split(",");
+
+        String domainRegex = String.join("|", validEmailDomainArray);
+        String regex = "^[a-zA-Z0-9._%+-]+@(" + domainRegex + ")$";
+
+        return email.matches(regex);
     }
 
     public List<ChatUser> getAllActive() {

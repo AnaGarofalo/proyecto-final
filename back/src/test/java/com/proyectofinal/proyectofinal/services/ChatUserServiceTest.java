@@ -14,8 +14,8 @@ class ChatUserServiceTest extends AbstractTest {
     @Autowired
     ChatUserService chatUserService;
 
-    @Value("${valid.email.domain}")
-    private String validEmailDomain;
+    @Value("${valid.email.domains}")
+    private String validEmailDomains;
 
     @Test
     void getOrCreateForPhone_userExists() {
@@ -28,7 +28,9 @@ class ChatUserServiceTest extends AbstractTest {
 
     @Test
     void getOrCreateForPhone_userDoesNotExist_validEmail() {
-        String email = "test@" + validEmailDomain + ".com";
+        String[] validEmailDomainArray = validEmailDomains.replace(" ", "").split(",");
+
+        String email = "test@" + validEmailDomainArray[0];
         String phone = "11-1111-1112";
 
         ChatUser result = chatUserService.getOrCreateForPhone(email, phone);

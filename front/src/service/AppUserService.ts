@@ -25,4 +25,12 @@ export default class AppUserService {
     static delete(externalId: string) {
         return httpClient.delete(`${this.basePath}/${externalId}`)
     }
+
+    static markAsBlocked(externalId: string) {
+        return httpClient.put<AppUserMinimalDTO>(this.basePath + "/block/" + externalId)
+    }
+
+    static unblock(externalId: string) {
+        return httpClient.put<AppUserMinimalDTO>(this.basePath + "/unblock/" + externalId)
+    }
 }
