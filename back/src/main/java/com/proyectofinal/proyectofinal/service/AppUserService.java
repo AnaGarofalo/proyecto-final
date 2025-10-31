@@ -102,4 +102,19 @@ public class AppUserService extends AbstractService<AppUser, AppUserRepository> 
         repository.save(user);
     }
 
+    public AppUser markAsBlocked(String externalId) {
+        log.info("Blocking app user with externalId {}", externalId);
+        AppUser appUser = getByExternalId(externalId);
+
+        appUser.setBlockedAt(LocalDateTime.now());
+        return repository.save(appUser);
+    }
+
+    public AppUser unblock(String externalId) {
+        log.info("Unblocking app user with externalId {}", externalId);
+        AppUser appUser = getByExternalId(externalId);
+
+        appUser.setBlockedAt(null);
+        return repository.save(appUser);
+    }
 }

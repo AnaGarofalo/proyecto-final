@@ -95,4 +95,15 @@ public class AppUserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/block/{externalId}")
+    public ResponseEntity<AppUserMinimalDTO> blockAppUser(@PathVariable("externalId") String externalId) {
+        AppUser appUser = appUserService.markAsBlocked(externalId);
+        return ResponseEntity.ok(EntityMapper.map(appUser, AppUserMinimalDTO.class));
+    }
+
+    @PutMapping("/unblock/{externalId}")
+    public ResponseEntity<AppUserMinimalDTO> unblockAppUser(@PathVariable("externalId") String externalId) {
+        AppUser appUser = appUserService.unblock(externalId);
+        return ResponseEntity.ok(EntityMapper.map(appUser, AppUserMinimalDTO.class));
+    }
 }

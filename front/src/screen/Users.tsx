@@ -4,48 +4,20 @@ import {
   Typography,
   CircularProgress
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { Colors } from '../utils/Colors';
-import BaseIconButton from '../components/base/BaseIconButton';
 import AppUserService from '../service/AppUserService';
 import type { AppUserMinimalDTO } from '../model/AppUser';
 import EditUserModal from '../components/EditUserModal';
 import '../components/base/base-table.css';
 import { ToastUtil } from '../utils/ToastUtils';
-import { BaseTable, type Column } from '../components/base/BaseTable';
 import BaseModal from '../components/base/BaseModal';
 import { AddUserModal } from '../components/AddUserModal';
+import AppUsersTable from '../components/AppUsersTable';
 
 export default function Users() {
   const [users, setUsers] = useState<AppUserMinimalDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [userToDelete, setUserToDelete] = useState<AppUserMinimalDTO | null>(null);
   const [userToEdit, setUserToEdit] = useState<AppUserMinimalDTO | null>(null);
-
-  const columns: Column<AppUserMinimalDTO>[] = [
-    {
-      field: 'email',
-      label: 'Correo electrónico',
-      flex: 1
-    },
-    {
-      label: 'Acciones',
-      width: 150,
-      render: (_, row) => (
-        <Box display="flex" gap={1}>
-          <BaseIconButton
-            onClick={() => setUserToEdit(row)}
-            icon={<EditIcon />}
-          />
-          <BaseIconButton
-            onClick={() => setUserToDelete(row)}
-            icon={<DeleteIcon />}
-          />
-        </Box>
-      ),
-    },
-  ];
 
   useEffect(() => {
     loadUsers();
@@ -92,6 +64,25 @@ export default function Users() {
     }
   };
 
+  async function toggleBlocked(isBlocked: boolean, externalId: string) {
+    try {
+      const response = isBlocked
+        ? await AppUserService.unblock(externalId)
+        : await AppUserService.markAsBlocked(externalId);
+
+      setUsers((current) =>
+        current.map((appUser) =>
+          appUser.externalId === externalId
+            ? { ...appUser, ...response.data }
+            : appUser
+        )
+      );
+    } catch (error) {
+      console.error(error);
+      ToastUtil.error("No se pudo bloquear al usuario");
+    }
+  }
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
@@ -102,16 +93,11 @@ export default function Users() {
 
   return (
     <Box>
-      
-
-
-
-      <BaseTable
-        columns={columns}
-        rows={users}
-        searchFields={['email']}
-        searchPlaceholder="Buscar por correo electrónico"
-      />
+      <AppUsersTable
+        appUsers={users}
+        onDelete={setUserToDelete} 
+        onEditUser={setUserToEdit}
+        onToggleBlocked={toggleBlocked}/>
 
       <BaseModal
         open={userToDelete !== null}
