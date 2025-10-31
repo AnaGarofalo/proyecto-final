@@ -33,8 +33,8 @@ class ConversationFlowTest extends AbstractTest {
     @MockBean
     RagService ragService;
 
-    @Value("${valid.email.domain}")
-    private String validEmailDomain;
+    @Value("${valid.email.domains}")
+    private String validEmailDomains;
 
 
     @Test
@@ -56,7 +56,8 @@ class ConversationFlowTest extends AbstractTest {
 
     @Test
     void getResponseForMessage_createsUser() {
-        String response = conversationFlowService.getResponseForMessage("test@" + validEmailDomain +".com", "33333333");
+        String[] validEmailDomainArray = validEmailDomains.replace(" ", "").split(",");
+        String response = conversationFlowService.getResponseForMessage("test@" + validEmailDomainArray[1], "33333333");
 
         assertEquals(PremadeResponse.CREATED_USER.getMessage(), response);
     }
