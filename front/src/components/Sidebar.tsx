@@ -18,6 +18,7 @@ import { Colors } from "../utils/Colors";
 import { NavigationRoute } from "../utils/NavigationUtils";
 import { DRAWER_WIDTH_PX, HEADER_HEIGHT_PX } from "./Layout";
 import BaseButton from "./base/BaseButton";
+import ChatIcon from "@mui/icons-material/Chat";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -41,7 +42,8 @@ const Sidebar = () => {
       path: NavigationRoute.CHAT_USERS,
     },
     { text: "Usuarios", icon: <PeopleIcon />, path: NavigationRoute.USERS },
-    { text: "Tickets", icon: <TicketIcon />, path: NavigationRoute.TICKET }
+    { text: "Tickets", icon: <TicketIcon />, path: NavigationRoute.TICKET },
+    { text: "Chat", icon: <ChatIcon />, path: NavigationRoute.CHAT }, 
   ];
   // Funcion para manejar el cierre de sesion
 

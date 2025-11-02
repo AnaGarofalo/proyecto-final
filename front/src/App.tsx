@@ -11,6 +11,7 @@ import Document from "./screen/Document";
 import ChatUsers from "./screen/ChatUsers";
 import Users from "./screen/Users";
 import Ticket from "./screen/Ticket";
+import TestChat from "./screen/TestChat";
 
 function App() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ function App() {
         <Route path={NavigationRoute.CHAT_USERS} element={<ChatUsers />} />
         <Route path={NavigationRoute.USERS} element={<Users />} />
         <Route path={NavigationRoute.TICKET} element={<Ticket />} />
+        <Route path={NavigationRoute.CHAT} element={<TestChat />} /> 
         <Route path="*" element={<Navigate to="/homepage" replace />} />
       </Route>
     </Routes>
