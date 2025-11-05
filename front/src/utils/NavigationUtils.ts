@@ -6,6 +6,7 @@ export const NavigationRoute = {
   CHAT_USERS: "/chat-users",
   USERS: "/users",
   TICKET: "/ticket",
+  CHAT: "/chat",
 } as const;
 
 export type NavigationRoute =
