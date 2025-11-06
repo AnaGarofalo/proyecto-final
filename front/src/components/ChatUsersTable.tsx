@@ -1,10 +1,11 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { BaseTable, type Column } from "./base/BaseTable";
 import { BaseSwitch } from "./base/BaseSwitch";
 import BaseIconButton from "./base/BaseIconButton";
 import type { ChatUser } from "../model/ChatUser";
+import { Colors } from "../utils/Colors";
 
 interface ChatUserTableProps {
   chatUsers: ChatUser[];
@@ -59,6 +60,21 @@ const ChatUserTable: React.FC<ChatUserTableProps> = ({
         searchPlaceholder="Buscar por correo electrónico o número de celular"
         pageSize={6}
       />
+
+      {/* Texto aclaratorio */}
+      <Box sx={{ mt: 2, mb: 3 }}>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: Colors.QUARTERNARY_DARK_GRAY,
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: '0.875rem',
+            fontStyle: 'italic'
+          }}
+        >
+          Los usuarios se crean automáticamente cuando un empleado le escribe al bot y se autentica con un email válido.
+        </Typography>
+      </Box>
     </Box>
   );
 };
