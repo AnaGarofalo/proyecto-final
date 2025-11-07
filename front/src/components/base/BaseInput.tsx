@@ -27,6 +27,9 @@ const BaseInput: React.FC<BaseInputProps> = ({
           <InputAdornment position="start">{icon}</InputAdornment>
         ) : undefined,
       }}
+      inputProps={{
+        maxLength: 45,
+      }}
       sx={{
         '& .MuiOutlinedInput-root': {
           borderRadius: 2,

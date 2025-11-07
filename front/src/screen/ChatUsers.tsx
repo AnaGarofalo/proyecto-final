@@ -3,10 +3,9 @@ import type { ChatUser } from "../model/ChatUser";
 import { ToastUtil } from "../utils/ToastUtils";
 import ChatUserService from "../service/ChatUserService";
 import BaseModal from "../components/base/BaseModal";
-import { Typography, Box } from "@mui/material";
+import { Typography } from "@mui/material";
 import { AddChatUserModal } from "../components/AddChatUserModal";
 import ChatUsersTable from "../components/ChatUsersTable";
-import { Colors } from "../utils/Colors";
 
 export default function ChatUsers() {
   const [chatUsers, setChatUsers] = useState<ChatUser[]>([]);
@@ -65,20 +64,7 @@ export default function ChatUsers() {
       onDelete={setUserToDelete}
     />
 
-    {/* Texto aclaratorio */}
-    <Box sx={{ mt: 2, mb: 3 }}>
-      <Typography 
-        variant="body2" 
-        sx={{ 
-          color: Colors.QUARTERNARY_DARK_GRAY,
-          fontFamily: 'Poppins, sans-serif',
-          fontSize: '0.875rem',
-          fontStyle: 'italic'
-        }}
-      >
-        Los usuarios se crean automáticamente cuando un empleado le escribe al bot y se autentica con un email válido.
-      </Typography>
-    </Box>
+
 
     <BaseModal
       open={userToDelete !== null}

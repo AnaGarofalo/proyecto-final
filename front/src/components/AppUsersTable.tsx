@@ -48,11 +48,21 @@ export default function AppUsersTable({
   ];
 
   return (
-    <BaseTable
-      columns={columns}
-      rows={appUsers}
-      searchFields={["email"]}
-      searchPlaceholder="Buscar por correo electrónico"
-    />
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: "1200px",
+        mx: "auto",
+        borderRadius: "8px",
+        overflow: "hidden",
+      }}
+    >
+      <BaseTable
+        columns={columns}
+        rows={appUsers}
+        searchFields={["email"]}
+        searchPlaceholder="Buscar por correo electrónico"
+      />
+    </Box>
   );
 }

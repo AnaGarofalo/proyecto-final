@@ -12,5 +12,5 @@ export interface LoginResponse {
 
 export const loginSchema = z.object({
   email: z.string().email('Email inválido'),
-  password: z.string(),
+  password: z.string().min(6, "La contraseña debe tener por lo menos 6 caracteres"),
 })
