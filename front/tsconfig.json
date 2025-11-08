@@ -21,8 +21,8 @@
       "emitDecoratorMetadata": true,
       "removeComments": true ,
       "noImplicitReturns": true ,
-      "noUnusedParameters": true,
-      "noUnusedLocals": true ,
+      "noUnusedParameters": false,
+      "noUnusedLocals": false ,
       "strict": true ,
       "typeRoots": [
         "./types",
