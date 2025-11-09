@@ -38,6 +38,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }
           disabled={disabled}
           multiline
           maxRows={4}
+          maxLength={200}
           sx={{ flexGrow: 1 }}
         />
         <BaseButton

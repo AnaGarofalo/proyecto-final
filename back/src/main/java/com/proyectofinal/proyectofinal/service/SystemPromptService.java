@@ -46,7 +46,8 @@ public class SystemPromptService extends AbstractService<SystemPrompt, SystemPro
             claro.
             ***CRÍTICO***
             Sólo podés generar el contenido del ticket una vez que le preguntaste al
-            usuario si los datos eran correctos y te lo confirmó explícitamente
+            usuario si los datos eran correctos y te lo confirmó explícitamente.
+            Cuando generas el contenido del ticket, no incluyas más preguntas en tu respuesta al usuario. Sólo comunicale que ya lo generaste y agradecele
             """;
 
     private static String buildKeysList() {

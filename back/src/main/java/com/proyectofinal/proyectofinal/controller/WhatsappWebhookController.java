@@ -53,12 +53,12 @@ public class WhatsappWebhookController {
 
                     if (text == null || text.isBlank()) {
                         String answer = "Recibido ✅";
-                        log.info("WA IN from={} text='{}' -> replying='{}'", from, text, answer);
+                        log.info("WA IN from={} -> replying", from);
                         client.sendText(from, answer);
                     } else {
                         try {
                             String iaResponse = conversationFlowService.getResponseForMessage(text, from);
-                            log.info("WA IN from={} text='{}' -> IA response='{}'", from, text, iaResponse);
+                            log.info("WA IN from={} -> IA response", from);
                             client.sendText(from, iaResponse);
                         } catch (Exception e) {
                             log.error("Error obteniendo respuesta IA para from={} text='{}'", from, text, e);

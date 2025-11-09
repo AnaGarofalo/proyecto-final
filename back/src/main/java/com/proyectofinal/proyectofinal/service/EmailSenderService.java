@@ -1,19 +1,12 @@
 package com.proyectofinal.proyectofinal.service;
 
-import java.io.IOException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.model.Message;
-import com.proyectofinal.proyectofinal.utils.EmailMessageBuilder;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Service

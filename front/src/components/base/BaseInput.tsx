@@ -5,7 +5,8 @@ import { Colors } from '../../utils/Colors'
 type BaseInputProps = TextFieldProps & {
   label?: string
   errorMessage?: string
-  icon?: React.ReactNode
+  icon?: React.ReactNode,
+  maxLength?: number,
 }
 
 const BaseInput: React.FC<BaseInputProps> = ({
@@ -13,6 +14,7 @@ const BaseInput: React.FC<BaseInputProps> = ({
   error,
   errorMessage,
   icon,
+  maxLength = 45,
   ...props
 }) => {
   return (
@@ -28,7 +30,7 @@ const BaseInput: React.FC<BaseInputProps> = ({
         ) : undefined,
       }}
       inputProps={{
-        maxLength: 45,
+        maxLength
       }}
       sx={{
         '& .MuiOutlinedInput-root': {

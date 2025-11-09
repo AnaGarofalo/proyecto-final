@@ -76,7 +76,7 @@ public class OpenAiService {
     public String answerFromContext(String question, int maxResults, String systemPrompt) {
 
         String context = buildContext(question, maxResults);
-        log.info("Requesting answer from OpenAi: question {}, context {}, systemPrompt {}", question, context, systemPrompt);
+        log.info("Requesting answer from OpenAi");
         return generateAnswer(question, context, systemPrompt);
     }
 
