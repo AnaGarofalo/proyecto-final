@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  # 🐘 PostgreSQL con extensión pgvector
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: postgres_pgvector
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./back/db/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # ⚙️ Backend Spring Boot
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back_proyectofinal
+    env_file:
+      - .env
+    environment:
+      DATABASE_NAME: proyectofinal
+      DATABASE_PORT: 5432
+      DATABASE_DOMAIN: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/proyectofinal
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front_proyectofinal
+    ports:
+      - "5173:80"  # Servido por Nginx (usa 80 dentro del contenedor)
+    environment:
+      VITE_API_URL: http://backend:8080  # usa el nombre del servicio en lugar de localhost
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

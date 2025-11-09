@@ -1,6 +1,11 @@
 package com.proyectofinal.proyectofinal.service;
 
 import java.io.IOException;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
@@ -12,25 +17,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EmailSenderService {
-        @Autowired
-        private Gmail gmailService;
+    private final JavaMailSender mailSender;
 
-    
-        public void sendEmail(String to, String subject, String bodyText) {
-                try {
-                        log.info(to, " ", subject, " ", bodyText);
-                        sendEmail("me", to, "proyectofinalgp1@gmail.com", subject, bodyText);
-                } catch (Exception e) {
-                        log.error("Error al tratar de enviar el mail", e);
-                }
-        }
+    @Value("${spring.mail.username}")
+    private String EMAIL;
 
-         private Message sendEmail(String userId, String to, String from, String subject, String bodyText)
-                        throws IOException {
-                Message message = EmailMessageBuilder.Build(to, from, subject, bodyText);
-                message = gmailService.users().messages().send(userId, message).execute();
-                log.info("Sent email with ID: " + message.getId());
-                return message;
+    public void sendEmail(String to, String subject, String bodyText) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(EMAIL); 
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText(bodyText);
+
+            mailSender.send(message);
+            log.info("Email sent to {}", to);
+        } catch (Exception e) {
+            log.error("Error sending email to: {}", e.getMessage(), e);
         }
+    }
 }
