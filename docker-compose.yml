@@ -49,8 +49,6 @@ services:
     container_name: front_proyectofinal
     ports:
       - "5173:80"  # Servido por Nginx (usa 80 dentro del contenedor)
-    environment:
-      VITE_API_URL: http://backend:8080  # usa el nombre del servicio en lugar de localhost
     depends_on:
       - backend
     networks:
