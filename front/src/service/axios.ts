@@ -25,8 +25,7 @@ const handleAutoLogout = () => {
 };
 
 const httpClient = axios.create({
-  baseURL: 'http://localhost:8080', 
-//   withCredentials: true, // si usás cookies o sesiones
+  baseURL: import.meta.env.VITE_API_URL,
 })
 
 // Interceptor de request para agregar automáticamente el token
